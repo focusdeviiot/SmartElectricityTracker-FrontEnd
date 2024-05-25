@@ -5,8 +5,10 @@ import Loading from "../pages/Loading/Loading";
 interface AuthContextProps {
   isAuthenticated: boolean;
   role: string | null;
+  isCheckingToken: boolean;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   setRole: (role: string | null) => void;
+  setIsCheckingToken: (isCheckingToken: boolean) => void;
 }
 
 export const AuthContext = createContext<AuthContextProps | undefined>(
@@ -17,10 +19,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [role, setRole] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [sss, setSss] = useState<boolean>(true);
+  const [delayLoading, setDelayLoading] = useState<boolean>(true);
+  const [isCheckingToken, setIsCheckingToken] = useState<boolean>(true);
 
   useEffect(() => {
+    setLoading(true);
     const verifyToken = async () => {
+      console.log("verifying token");
       const valid = await checkToken();
       setIsAuthenticated(valid);
       if (valid) {
@@ -28,9 +33,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setRole(userRole);
       }
 
-      // setSss(false);
       setTimeout(() => {
-        setSss(false);
+        setDelayLoading(false);
         setTimeout(() => {
           setLoading(false);
         }, 200);
@@ -38,16 +42,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     verifyToken();
-  }, []);
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return; 
+    const verifyToken = async () => {
+      console.log("verifying token");
+      const valid = await checkToken();
+      setIsAuthenticated(valid);
+      if (valid) {
+        const userRole = localStorage.getItem("user_role");
+        setRole(userRole);
+      }
+    };
+
+    verifyToken();
+  }, [isCheckingToken]);
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, role, setIsAuthenticated, setRole }}
+      value={{ isAuthenticated, role, isCheckingToken, setIsAuthenticated, setRole, setIsCheckingToken }}
     >
       <div className="">
         <div
           className={`transition-opacity duration-200 ${
-            sss ? "opacity-100" : "opacity-0"
+            delayLoading ? "opacity-100" : "opacity-0"
           }`}
         >
           {loading ? <Loading /> : null}
