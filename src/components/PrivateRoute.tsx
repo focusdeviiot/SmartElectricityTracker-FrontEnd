@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext';
+import React, { useContext, useEffect } from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
 interface PrivateRouteProps {
   children: JSX.Element;
@@ -11,12 +11,20 @@ const PrivateRoute = ({ children, requiredRole }: PrivateRouteProps) => {
   const auth = useContext(AuthContext);
   const location = useLocation();
 
+  useEffect(() => {
+    auth?.setIsCheckingToken(!auth.isCheckingToken);
+  }, [location.pathname]);
+
   if (auth === undefined) {
-    return <div>Loading...</div>;
+    return null;
   }
 
   if (!auth.isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} />;
+  }
+
+  if (auth.role === null) {
+    return null;
   }
 
   if (requiredRole && !requiredRole.includes(auth.role as string)) {

@@ -35,7 +35,7 @@ apiClient.interceptors.response.use(
         const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/refresh-token`, {
           refresh_token: refreshToken,
         });
-        DecodeTokenAndSetLocalStorage(response.data.data);
+        await DecodeTokenAndSetLocalStorage(response.data.data);
 
         originalRequest.headers.Authorization = `Bearer ${response.data.data.access_token}`;
         return apiClient(originalRequest);

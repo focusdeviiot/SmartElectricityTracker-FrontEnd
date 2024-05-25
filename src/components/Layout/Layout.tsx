@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
+import { FaUserCircle } from "react-icons/fa";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -14,15 +15,12 @@ const ProfileDropdown: React.FC = () => {
         className="btn btn-ghost btn-circle avatar"
       >
         <div className="w-10 rounded-full">
-          <img
-            alt="Tailwind CSS Navbar component"
-            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-          />
+          <FaUserCircle className="w-10 h-10" />
         </div>
       </div>
       <ul
         tabIndex={0}
-        className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+        className="bg-base-100 menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52"
       >
         <li>
           <a className="justify-between">
@@ -45,7 +43,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="flex flex-col">
       {/* <Header /> */}
-      <nav className="navbar bg-base-100 fixed top-0 w-full z-50">
+      <nav className="navbar bg-opacity-30 backdrop-blur-lg fixed top-0 w-full z-50 border-b-[1px] border-b-opacity-30 border-b-stone-700">
         <div className="flex-none">
           <label
             htmlFor="my-drawer-2"
@@ -67,17 +65,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </label>
         </div>
         <div className="flex-1">
-          <Link to="/" className="btn btn-ghost text-xl hover:bg-transparent">Smart Electricity Tracker</Link>
+          <Link to="/" className="btn btn-ghost text-xl hover:bg-transparent">
+            Smart Electricity Tracker
+          </Link>
         </div>
-        <div className="flex-none gap-2">
+        <div className="flex-none gap-2 mr-2">
           <ProfileDropdown />
         </div>
       </nav>
-      <div className="h-12" />
 
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <main className="drawer-content flex flex-col items-center justify-center">
+        <main className="bg-base-300 pt-20 drawer-content flex flex-col items-center overflow-y-auto px-5">
           {/* Page content here */}
           {children}
         </main>
@@ -88,7 +87,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+          <ul className="h-full w-64 bg-base-300 pt-20 menu p-4 text-base-content overflow-y-auto">
             {/* Sidebar content here */}
             <li>
               <NavLink
