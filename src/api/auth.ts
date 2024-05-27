@@ -3,12 +3,12 @@ import { Response } from '../models/response';
 import { DecodeTokenAndSetLocalStorage } from '../helpers/DecodeJWT';
 
 export const login = async (username: string, password: string): Promise<Response> => {
-  try{
+  try {
     const response = await apiClient.post<Response>('/login', { username, password });
     await DecodeTokenAndSetLocalStorage(response.data.data);
     return response.data;
-  } catch (error : any) {
-    return error.response.data;
+  } catch (error: any) {
+    return Promise.reject(error);
   }
 };
 
