@@ -33,16 +33,20 @@ const ProfileDropdown: React.FC = () => {
           <div>
             <h2 className="text-lg truncate">{auth?.userName}</h2>
             <p className="text-sm text-primary">
-              <span className="text-gray-500">Role:</span>&nbsp;&nbsp;{auth?.role}
+              <span className="text-gray-500">Role:</span>&nbsp;&nbsp;
+              {auth?.role}
             </p>
           </div>
         </div>
         <ul className="mt-2 flex flex-col gap-2">
           <li>
-            <Link className="flex justify-center items-center h-10 text-red-500" to="/logout">
+            <Link
+              className="flex justify-center items-center h-10 text-red-500"
+              to="/logout"
+            >
               <IoMdLogOut className="w-5 h-5" />
               Logout
-              </Link>
+            </Link>
           </li>
         </ul>
       </div>
@@ -89,7 +93,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <main className="bg-base-300 h-screen pt-20 drawer-content flex flex-col items-center overflow-y-auto px-5">
           {/* Page content here */}
-          {children}
+          <div className="container mx-auto">{children}</div>
         </main>
 
         <aside className="drawer-side">

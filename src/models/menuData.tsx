@@ -20,7 +20,7 @@ export interface MenuItem {
 export const menuData: MenuItem[] = [
   {
     icon: <MdSensors className="w-5 h-5 text-primary" />,
-    title: "Device RealTime",
+    title: "Electricity Tracker",
     layout: true,
     path: "",
     role: [Role.USER, Role.ADMIN],
