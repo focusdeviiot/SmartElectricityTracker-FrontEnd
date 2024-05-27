@@ -1,6 +1,7 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
+import Navbar from "./Navbar";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -87,37 +88,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="h-full w-64 bg-base-300 pt-20 menu p-4 text-base-content overflow-y-auto">
+          <div className="h-full w-64 bg-base-300 pt-20 menu p-4 text-base-content overflow-y-auto">
             {/* Sidebar content here */}
-            <li>
-              <NavLink
-                to="/"
-                className={({ isActive, isPending, isTransitioning }) =>
-                  [
-                    isPending ? "pending" : "",
-                    isActive ? "active" : "",
-                    isTransitioning ? "transitioning" : "",
-                  ].join(" ")
-                }
-              >
-                Home
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/dashboard"
-                className={({ isActive, isPending, isTransitioning }) =>
-                  [
-                    isPending ? "pending" : "",
-                    isActive ? "active" : "",
-                    isTransitioning ? "transitioning" : "",
-                  ].join(" ")
-                }
-              >
-                Dashboard
-              </NavLink>
-            </li>
-          </ul>
+            <Navbar/>
+          </div>
         </aside>
       </div>
     </div>
