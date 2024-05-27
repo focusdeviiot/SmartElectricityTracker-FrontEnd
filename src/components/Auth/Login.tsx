@@ -6,9 +6,12 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAlert } from '../../contexts/AlertContext';
 
 const Login = () => {
   const auth = useContext(AuthContext);
+  const { showAlert } = useAlert();
+
   const schema = z
     .object({
       username: z
@@ -47,7 +50,8 @@ const Login = () => {
           message: resp.message,
         });
       }
-    } catch (error) {
+    } catch (error : any) {
+      showAlert(error.message, "error");
       console.error("Login failed", error);
     }
   };
