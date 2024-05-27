@@ -6,6 +6,7 @@ interface AuthContextProps {
   isAuthenticated: boolean;
   role: string | null;
   isCheckingToken: boolean;
+  userName: string | null;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   setRole: (role: string | null) => void;
   setIsCheckingToken: (isCheckingToken: boolean) => void;
@@ -17,6 +18,7 @@ export const AuthContext = createContext<AuthContextProps | undefined>(
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [userName, setUserName] = useState<string | null>(null); 
   const [role, setRole] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [delayLoading, setDelayLoading] = useState<boolean>(true);
@@ -30,7 +32,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsAuthenticated(valid);
       if (valid) {
         const userRole = localStorage.getItem("user_role");
+        const user_name = localStorage.getItem("user_name");
         setRole(userRole);
+        setUserName(user_name);
       }
 
       setTimeout(() => {
@@ -61,7 +65,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, role, isCheckingToken, setIsAuthenticated, setRole, setIsCheckingToken }}
+      value={{ isAuthenticated, role, isCheckingToken, userName, setIsAuthenticated, setRole, setIsCheckingToken }}
     >
       <div className="">
         <div
