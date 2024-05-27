@@ -9,7 +9,7 @@ const MenuItemComponent: React.FC<{ item: MenuItem, roleUser?: string | null }> 
   return (
     <li className="relative">
       { item.children ? (
-        <span className="block px-4 py-2 cursor-default text-gray-700">
+        <span className="block px-4 py-2 !cursor-default text-gray-500 hover:!bg-transparent active:!bg-transparent ">
           {item.title}
         </span>
       ) : (
@@ -27,7 +27,7 @@ const MenuItemComponent: React.FC<{ item: MenuItem, roleUser?: string | null }> 
         </NavLink>
       )}
       {item.children && (
-        <ul className="pl-4">
+        <ul className="pl-2">
           {item.children.map((child: MenuItem) => {
             if (!item.isNotShow && (!item.role || item.role?.includes(roleUser as Role))) {
               const newChild = { ...child, path: item.path + "/" + child.path };
@@ -43,7 +43,7 @@ const MenuItemComponent: React.FC<{ item: MenuItem, roleUser?: string | null }> 
 const Navbar: React.FC = () => {
     const auth = useContext(AuthContext);
     return (
-        <nav className="bg-gray-100 p-4">
+        <nav className="">
             <ul className="space-y-2">
                 {menuData.map(
                     (item: MenuItem) =>
