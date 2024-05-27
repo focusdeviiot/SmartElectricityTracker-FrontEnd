@@ -20,7 +20,7 @@ export const menuData: MenuItem[] = [
         title: "Dashboard",
         layout: true,
         path: "dashboard",
-        role: [Role.ADMIN],
+        role: [Role.ADMIN, Role.USER],
     },
     {
         title: "Admin management",
@@ -31,6 +31,7 @@ export const menuData: MenuItem[] = [
             {
                 title: "Users",
                 path: "users",
+                // role: [Role.ADMIN],
             }
         ],
     },
