@@ -6,11 +6,13 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAlert } from '../../contexts/AlertContext';
+import { useAlert } from "../../contexts/AlertContext";
+import AsyncButton from "../AsyncButton/AsyncButton";
 
 const Login = () => {
   const auth = useContext(AuthContext);
   const { showAlert } = useAlert();
+  const [loading, setLoading] = React.useState(false);
 
   const schema = z
     .object({
@@ -33,6 +35,8 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    if (loading) return;
+    setLoading(true);
     try {
       const { username, password } = getValues();
       const resp = await login(username, password);
@@ -50,9 +54,24 @@ const Login = () => {
           message: resp.message,
         });
       }
-    } catch (error : any) {
-      showAlert(error.message, "error");
-      console.error("Login failed", error);
+    } catch (error: any) {
+      if (error?.response?.status === 400) {
+        setError("username", {
+          type: "manual",
+          message: error.response.data.message,
+        });
+
+        setError("password", {
+          type: "manual",
+          message: error.response.data.message,
+        });
+      } else {
+        showAlert(error.message, "error");
+      }
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 200);
     }
   };
 
@@ -134,12 +153,9 @@ const Login = () => {
               </div>
             </div>
             <div className="card-actions flex justify-center pt-6">
-              <button
-                className="btn btn-primary btn-sm shadow-lg shadow-blue-500/50"
-                type="submit"
-              >
+              <AsyncButton title="Login" type="submit" loading={loading}>
                 <IoMdLogIn className="h-4 w-4" /> Login
-              </button>
+              </AsyncButton>
             </div>
           </form>
         </div>
