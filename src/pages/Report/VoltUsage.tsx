@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import LineChart from "../../components/LineChart.tsx/LineChart";
 import Datepicker, { DateRangeType } from "react-tailwindcss-datepicker";
 import AsyncButton from "../../components/AsyncButton/AsyncButton";
-import { IoMdLogIn } from "react-icons/io";
+import { FaSearchengin } from "react-icons/fa";
+import { FaTrashCan } from "react-icons/fa6";
 
 const VoltUsage = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -61,7 +62,7 @@ const VoltUsage = () => {
             type="submit"
             // loading={loading}
           >
-            <IoMdLogIn className="h-4 w-4" /> Clear
+            <FaTrashCan className="h-4 w-4" /> Clear
           </AsyncButton>
           <AsyncButton
             className="mb-1"
@@ -69,7 +70,7 @@ const VoltUsage = () => {
             type="submit"
             // loading={loading}
           >
-            <IoMdLogIn className="h-4 w-4" /> Search
+            <FaSearchengin className="h-4 w-4" /> Search
           </AsyncButton>
         </div>
       </div>
