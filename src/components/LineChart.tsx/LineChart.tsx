@@ -44,7 +44,7 @@ export const data: ChartData<"line"> = {
       label: "Volt",
       data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
       borderColor: "rgb(99, 102, 241)",
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
+      backgroundColor: "rgba(99, 102, 241, 0.5)",
     },
   ],
 };
