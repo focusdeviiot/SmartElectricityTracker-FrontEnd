@@ -41,7 +41,96 @@ const VoltUsage = () => {
         Report of your electricity usage in volts
       </p>
 
-      <div className="mt-12 flex flex-wrap justify-center items-end gap-6 m-4 ">
+      <h4 className="text-xl mt-12 font-bold text-center">Device 1</h4>
+      <div className="flex flex-wrap justify-center items-end gap-6 m-4 ">
+        <div className="flex flex-col w-60 gap-2">
+          <label>Report date range</label>
+          <Datepicker
+            primaryColor="violet"
+            startWeekOn="mon"
+            placeholder="Select Date Range"
+            value={value}
+            onChange={handleValueChange}
+            showShortcuts={true}
+            readOnly={true}
+            displayFormat="DD/MM/YYYY"
+          />
+        </div>
+        <div className="flex gap-3">
+          <AsyncButton
+            className="mb-1 bg-gray-400 border-none shadow-none hover:bg-gray-500"
+            title="Login"
+            type="submit"
+            // loading={loading}
+          >
+            <FaTrashCan className="h-4 w-4" /> Clear
+          </AsyncButton>
+          <AsyncButton
+            className="mb-1"
+            title="Login"
+            type="submit"
+            // loading={loading}
+          >
+            <FaSearchengin className="h-4 w-4" /> Search
+          </AsyncButton>
+        </div>
+      </div>
+      <div className="flex justify-center mt-8">
+        {loading ? (
+          <span className="loading loading-spinner loading-lg text-primary h-60"></span>
+        ) : (
+          <div className="w-full xl:w-[980px]">
+            <LineChart />
+          </div>
+        )}
+      </div>
+
+      <h4 className="text-xl mt-12 font-bold text-center">Device 2</h4>
+      <div className="flex flex-wrap justify-center items-end gap-6 m-4 ">
+        <div className="flex flex-col w-60 gap-2">
+          <label>Report date range</label>
+          <Datepicker
+            primaryColor="violet"
+            startWeekOn="mon"
+            placeholder="Select Date Range"
+            value={value}
+            onChange={handleValueChange}
+            showShortcuts={true}
+            readOnly={true}
+            displayFormat="DD/MM/YYYY"
+          />
+        </div>
+        <div className="flex gap-3">
+          <AsyncButton
+            className="mb-1 bg-gray-400 border-none shadow-none hover:bg-gray-500"
+            title="Login"
+            type="submit"
+            // loading={loading}
+          >
+            <FaTrashCan className="h-4 w-4" /> Clear
+          </AsyncButton>
+          <AsyncButton
+            className="mb-1"
+            title="Login"
+            type="submit"
+            // loading={loading}
+          >
+            <FaSearchengin className="h-4 w-4" /> Search
+          </AsyncButton>
+        </div>
+      </div>
+      <div className="flex justify-center mt-8">
+        {loading ? (
+          <span className="loading loading-spinner loading-lg text-primary h-60"></span>
+        ) : (
+          <div className="w-full xl:w-[980px]">
+            <LineChart />
+          </div>
+        )}
+      </div>
+
+      <h4 className="text-xl mt-12 font-bold text-center">Device 3</h4>
+      <div className="flex flex-wrap justify-center items-end gap-6 m-4 ">
         <div className="flex flex-col w-60 gap-2">
           <label>Report date range</label>
           <Datepicker
