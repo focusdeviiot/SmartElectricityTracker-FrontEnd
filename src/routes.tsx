@@ -6,25 +6,28 @@ import { MenuItem, menuData } from "./models/menuData";
 import Layout from "./components/Layout/Layout";
 import Login from "./components/Auth/Login";
 import Logout from "./components/Auth/Logout";
-import Dashboard from "./pages/Dashboard/Dashboard";
 import Home from "./pages/Home/Home";
 import Unauthorized from "./pages/Unauthorized/Unauthorized";
+import VoltUsage from "./pages/Report/VoltUsage";
 
 const mapComponent = (item: MenuItem) => {
-  let component: JSX.Element;
+  let component: JSX.Element | null;
 
-  switch (item.title) {
-    case "Login":
+  switch (item.key) {
+    case "home": // Map Key
+      component = <Home />;
+      break;
+    case "login":
       component = <Login />;
       break;
-    case "Logout":
+    case "logout":
       component = <Logout />;
       break;
-    case "Dashboard":
-      component = <Dashboard />;
-      break;
-    case "Unauthorized":
+    case "unauthorized":
       component = <Unauthorized />;
+      break;
+    case "volt-usage":
+      component = <VoltUsage />;
       break;
     default:
       component = <Home />;
@@ -45,14 +48,13 @@ const mapMenu = (menuData: MenuItem[]) => {
   return menuData.map((item: MenuItem): RouteObject => {
     return {
       path: item.path,
-      element: mapComponent(item),
+      element: !item.children && mapComponent(item),
       children: mapMenu(item.children || []),
     };
   });
 };
 
 const routes: RouteObject[] = mapMenu(menuData);
-
 
 const router = createBrowserRouter(routes);
 

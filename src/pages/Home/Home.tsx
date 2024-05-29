@@ -3,7 +3,7 @@ import { MdElectricBolt } from "react-icons/md";
 
 const Home = () => {
   return (
-    <div className="">
+    <div>
       <h2 className="text-2xl font-bold text-center">Electricity Tracker</h2>
       <p className="text-center text-gray-400">
         Track your electricity usage in real-time

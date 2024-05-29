@@ -1,14 +1,15 @@
 import { Role } from "./role";
-import { TbZoomMoney } from "react-icons/tb";
+// import { TbZoomMoney } from "react-icons/tb";
 import { MdSensors } from "react-icons/md";
 import { MdOutlineElectricMeter } from "react-icons/md";
 import { TbReportAnalytics } from "react-icons/tb";
 import { MdManageAccounts } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
-import { IoIosPricetags } from "react-icons/io";
+// import { IoIosPricetags } from "react-icons/io";
 
 export interface MenuItem {
   icon?: JSX.Element;
+  key: string;
   title: string;
   path: string;
   role?: Role[];
@@ -20,9 +21,10 @@ export interface MenuItem {
 export const menuData: MenuItem[] = [
   {
     icon: <MdSensors className="w-5 h-5 text-primary" />,
+    key: "home",
     title: "Electricity Tracker",
-    layout: true,
     path: "",
+    layout: true,
     role: [Role.USER, Role.ADMIN],
   },
   // {
@@ -34,50 +36,62 @@ export const menuData: MenuItem[] = [
   // },
   {
     icon: <TbReportAnalytics className="w-5 h-5 text-gray-500" />,
+    key: "report",
     title: "Report",
-    layout: true,
     path: "report",
+    layout: true,
     role: [Role.USER, Role.ADMIN],
     children: [
       {
         icon: <MdOutlineElectricMeter className="w-5 h-5 text-primary" />,
+        key: "volt-usage",
         title: "Volt usage",
         path: "volt-usage",
+        layout: true,
+        role: [Role.USER, Role.ADMIN],
       },
       {
         icon: <MdOutlineElectricMeter className="w-5 h-5 text-primary" />,
+        key: "amp-usage",
         title: "Amp usage",
         path: "amp-usage",
+        layout: true,
+        role: [Role.USER, Role.ADMIN],
       },
       {
         icon: <MdOutlineElectricMeter className="w-5 h-5 text-primary" />,
+        key: "watt-usage",
         title: "Watt usage",
         path: "watt-usage",
+        layout: true,
+        role: [Role.USER, Role.ADMIN],
       },
-      {
-        icon: <TbZoomMoney className="w-5 h-5 text-primary" />,
-        title: "Electricity bill",
-        path: "electricity-bill-usage",
-      },
+      // {
+      //   icon: <TbZoomMoney className="w-5 h-5 text-primary" />,
+      //   title: "Electricity bill",
+      //   path: "electricity-bill-usage",
+      // },
     ],
   },
   {
     icon: <MdManageAccounts className="w-5 h-5 text-gray-500" />,
+    key: "admin",
     title: "Admin management",
     path: "admin",
-    layout: true,
-    role: [Role.ADMIN],
     children: [
       {
         icon: <FaUserEdit className="w-5 h-5 text-primary" />,
+        key: "users",
         title: "Users",
         path: "users",
+        layout: true,
+        role: [Role.ADMIN],
       },
-      {
-        icon: <IoIosPricetags className="w-5 h-5 text-primary" />,
-        title: "Price / Unit",
-        path: "price-unit",
-      },
+      // {
+      //   icon: <IoIosPricetags className="w-5 h-5 text-primary" />,
+      //   title: "Price / Unit",
+      //   path: "price-unit",
+      // },
       // {
       //     title: "Electricity billing",
       //     path: "electricity-billing",
@@ -85,16 +99,19 @@ export const menuData: MenuItem[] = [
     ],
   },
   {
+    key: "unauthorized",
     title: "Unauthorized",
     path: "unauthorized",
     isNotShow: true,
   },
   {
+    key: "login",
     title: "Login",
     path: "login",
     isNotShow: true,
   },
   {
+    key: "logout",
     title: "Logout",
     path: "logout",
     isNotShow: true,

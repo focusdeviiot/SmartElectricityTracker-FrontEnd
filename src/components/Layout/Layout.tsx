@@ -4,9 +4,10 @@ import { FaUserCircle } from "react-icons/fa";
 import Navbar from "./Navbar";
 import { IoMdLogOut } from "react-icons/io";
 import { AuthContext } from "../../contexts/AuthContext";
+import { MdElectricBolt } from "react-icons/md";
 
 interface LayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const ProfileDropdown: React.FC = () => {
@@ -81,6 +82,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
         <div className="flex-1">
           <Link to="/" className="btn btn-ghost text-xl hover:bg-transparent">
+            <MdElectricBolt className="w-8 h-8" />
             Smart Electricity Tracker
           </Link>
         </div>
