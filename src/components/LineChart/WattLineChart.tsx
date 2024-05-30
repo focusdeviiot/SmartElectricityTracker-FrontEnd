@@ -11,12 +11,12 @@ import { z } from "zod";
 import { differenceInMonths, endOfDay, startOfDay } from "date-fns/fp";
 import React from "react";
 
-export interface AmpLineChartProps {
+export interface WattLineChartProps {
   DeviceName: string;
   DeviceUuid?: string;
 }
 
-const AmpLineChart: React.FC<AmpLineChartProps> = ({
+const WattLineChart: React.FC<WattLineChartProps> = ({
   DeviceName,
   // DeviceUuid,
 }) => {
@@ -76,7 +76,7 @@ const AmpLineChart: React.FC<AmpLineChartProps> = ({
   } = useForm<FormFields>(formOptions);
 
   const defaultLimit: LimitProps = {
-    suggestedMax: 10,
+    suggestedMax: 500,
     suggestedMin: 0,
   };
   const [voltUsage, setVoltUsage] = useState<DatasetsProps[]>([]);
@@ -198,8 +198,8 @@ const AmpLineChart: React.FC<AmpLineChartProps> = ({
         ) : (
           <div className="w-full xl:w-[980px] h-96">
             <LineChart
-              title="Amp"
-              unit="A"
+              title="Watt"
+              unit="W/hr"
               limit={defaultLimit}
               datasets={voltUsage}
             />
@@ -210,4 +210,4 @@ const AmpLineChart: React.FC<AmpLineChartProps> = ({
   );
 };
 
-export default AmpLineChart;
+export default WattLineChart;

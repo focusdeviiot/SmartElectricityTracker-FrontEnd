@@ -10,6 +10,7 @@ import Home from "./pages/Home/Home";
 import Unauthorized from "./pages/Unauthorized/Unauthorized";
 import VoltUsage from "./pages/Report/VoltUsage";
 import AmpUsage from "./pages/Report/AmpUsage";
+import WattUsage from "./pages/Report/WattUsage";
 
 const mapComponent = (item: MenuItem) => {
   let component: JSX.Element | null;
@@ -32,6 +33,9 @@ const mapComponent = (item: MenuItem) => {
       break;
     case "amp-usage":
       component = <AmpUsage />;
+      break;
+    case "watt-usage":
+      component = <WattUsage />;
       break;
     default:
       component = <Home />;
