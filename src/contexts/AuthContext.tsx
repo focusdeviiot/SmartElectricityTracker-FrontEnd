@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState, ReactNode } from "react";
 import { checkToken } from "../api/auth";
-import Loading from "../pages/Loading/Loading";
+import Loading from "../pages/Loading";
 
 interface AuthContextProps {
   isAuthenticated: boolean;
@@ -25,9 +25,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isCheckingToken, setIsCheckingToken] = useState<boolean>(true);
 
   useEffect(() => {
-    setLoading(true);
+    
     const verifyToken = async () => {
-      console.log("verifying token");
+      setLoading(true);
       const valid = await checkToken();
       setIsAuthenticated(valid);
       if (valid) {

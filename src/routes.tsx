@@ -4,27 +4,42 @@ import PrivateRoute from "./components/PrivateRoute";
 import { MenuItem, menuData } from "./models/menuData";
 
 import Layout from "./components/Layout/Layout";
-import Login from "./components/Auth/Login";
-import Logout from "./components/Auth/Logout";
-import Dashboard from "./pages/Dashboard/Dashboard";
-import Home from "./pages/Home/Home";
-import Unauthorized from "./pages/Unauthorized/Unauthorized";
+import Login from "./pages/Auth/Login";
+import Logout from "./pages/Auth/Logout";
+import Home from "./pages/Home";
+import Unauthorized from "./pages/Unauthorized";
+import VoltUsage from "./pages/Report/VoltUsage";
+import AmpUsage from "./pages/Report/AmpUsage";
+import WattUsage from "./pages/Report/WattUsage";
+import Users from "./pages/Admin/Users";
 
 const mapComponent = (item: MenuItem) => {
-  let component: JSX.Element;
+  let component: JSX.Element | null;
 
-  switch (item.title) {
-    case "Login":
+  switch (item.key) {
+    case "home": // Map Key
+      component = <Home />;
+      break;
+    case "login":
       component = <Login />;
       break;
-    case "Logout":
+    case "logout":
       component = <Logout />;
       break;
-    case "Dashboard":
-      component = <Dashboard />;
-      break;
-    case "Unauthorized":
+    case "unauthorized":
       component = <Unauthorized />;
+      break;
+    case "volt-usage":
+      component = <VoltUsage />;
+      break;
+    case "amp-usage":
+      component = <AmpUsage />;
+      break;
+    case "watt-usage":
+      component = <WattUsage />;
+      break;
+    case "users":
+      component = <Users />;
       break;
     default:
       component = <Home />;
@@ -45,14 +60,13 @@ const mapMenu = (menuData: MenuItem[]) => {
   return menuData.map((item: MenuItem): RouteObject => {
     return {
       path: item.path,
-      element: mapComponent(item),
+      element: !item.children && mapComponent(item),
       children: mapMenu(item.children || []),
     };
   });
 };
 
 const routes: RouteObject[] = mapMenu(menuData);
-
 
 const router = createBrowserRouter(routes);
 

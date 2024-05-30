@@ -2,7 +2,7 @@
 import daisyui from "daisyui";
 
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}", "./node_modules/react-tailwindcss-datepicker/dist/index.esm.js"],
   theme: {
     extend: {
       animation: {
@@ -30,6 +30,21 @@ export default {
 
       "2xl": "1536px",
       // => @media (min-width: 1536px) { ... }
+    },
+    container: {
+      // you can configure the container to be centered
+      center: true,
+
+      // or have default horizontal padding
+      padding: "1rem",
+
+      // default breakpoints but with 40px removed
+      screens: {
+        sm: "600px",
+        md: "728px",
+        lg: "984px",
+        xl: "1240px",
+      },
     },
   },
   plugins: [daisyui],

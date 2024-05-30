@@ -7,7 +7,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAlert } from "../../contexts/AlertContext";
-import AsyncButton from "../AsyncButton/AsyncButton";
+import AsyncButton from "../../components/AsyncButton/AsyncButton";
+import { MdElectricBolt } from "react-icons/md";
 
 const Login = () => {
   const auth = useContext(AuthContext);
@@ -78,15 +79,11 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-base-300">
       <div className="card w-96 bg-base-100 shadow-xl">
-        {/* <figure className="px-10 pt-10">
-          <img
-            src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
-            alt="Shoes"
-            className="rounded-xl"
-          />
-        </figure> */}
+        <figure className="px-8 pt-10">
+          <MdElectricBolt className="w-10 h-10" />
+        </figure>
         <div className="card-body items-center text-center">
-          <h2 className="card-title mt-2 mb-4">Smart Electricity Tracker</h2>
+          <h2 className="card-title mb-4"> Smart Electricity Tracker</h2>
           <form onSubmit={handleSubmit(handleLogin)}>
             <div className="flex flex-col gap-2">
               <div className="flex flex-col items-start">
