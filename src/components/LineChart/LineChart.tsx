@@ -38,6 +38,7 @@ export interface LineChartProps {
   // uuid?: string;
   title: string;
   unit: string;
+  stepSize?: number;
   limit?: LimitProps;
   datasets?: DatasetsProps[];
 }
@@ -45,6 +46,7 @@ export interface LineChartProps {
 const LineChart: React.FC<LineChartProps> = ({
   unit,
   title,
+  stepSize,
   limit,
   datasets,
 }) => {
@@ -69,7 +71,6 @@ const LineChart: React.FC<LineChartProps> = ({
   };
 
   const options: ChartOptions<"line"> = {
-    // responsive: true,
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -117,7 +118,7 @@ const LineChart: React.FC<LineChartProps> = ({
           color: "#3f3f46",
         },
         ticks: {
-          stepSize: 25,
+          stepSize: stepSize,
           color: "#718096",
           callback: function (value) {
             return value + " " + unit;

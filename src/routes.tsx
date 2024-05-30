@@ -9,6 +9,7 @@ import Logout from "./components/Auth/Logout";
 import Home from "./pages/Home/Home";
 import Unauthorized from "./pages/Unauthorized/Unauthorized";
 import VoltUsage from "./pages/Report/VoltUsage";
+import AmpUsage from "./pages/Report/AmpUsage";
 
 const mapComponent = (item: MenuItem) => {
   let component: JSX.Element | null;
@@ -28,6 +29,9 @@ const mapComponent = (item: MenuItem) => {
       break;
     case "volt-usage":
       component = <VoltUsage />;
+      break;
+    case "amp-usage":
+      component = <AmpUsage />;
       break;
     default:
       component = <Home />;

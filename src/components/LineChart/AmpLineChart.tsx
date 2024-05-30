@@ -16,7 +16,7 @@ export interface VoltLineChartProps {
   DeviceUuid?: string;
 }
 
-const VoltLineChart: React.FC<VoltLineChartProps> = ({
+const AmpLineChart: React.FC<VoltLineChartProps> = ({
   DeviceName,
   // DeviceUuid,
 }) => {
@@ -76,7 +76,7 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
   } = useForm<FormFields>(formOptions);
 
   const defaultLimit: LimitProps = {
-    suggestedMax: 250,
+    suggestedMax: 10,
     suggestedMin: 0,
   };
   const [voltUsage, setVoltUsage] = useState<DatasetsProps[]>([]);
@@ -198,9 +198,8 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
         ) : (
           <div className="w-full xl:w-[980px] h-96">
             <LineChart
-              title="Volt"
-              unit="V"
-              stepSize={25}
+              title="Amp"
+              unit="A"
               limit={defaultLimit}
               datasets={voltUsage}
             />
@@ -211,4 +210,4 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
   );
 };
 
-export default VoltLineChart;
+export default AmpLineChart;
