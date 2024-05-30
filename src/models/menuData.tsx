@@ -87,6 +87,14 @@ export const menuData: MenuItem[] = [
         layout: true,
         role: [Role.ADMIN],
       },
+      {
+        icon: <FaUserEdit className="w-5 h-5 text-primary" />,
+        key: "devices",
+        title: "Devices",
+        path: "device",
+        layout: true,
+        role: [Role.ADMIN],
+      },
       // {
       //   icon: <IoIosPricetags className="w-5 h-5 text-primary" />,
       //   title: "Price / Unit",
