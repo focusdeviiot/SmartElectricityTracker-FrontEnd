@@ -5,6 +5,7 @@ import { MdOutlineElectricMeter } from "react-icons/md";
 import { TbReportAnalytics } from "react-icons/tb";
 import { MdManageAccounts } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
+import { MdDeviceHub } from "react-icons/md";
 // import { IoIosPricetags } from "react-icons/io";
 
 export interface MenuItem {
@@ -88,7 +89,7 @@ export const menuData: MenuItem[] = [
         role: [Role.ADMIN],
       },
       {
-        icon: <FaUserEdit className="w-5 h-5 text-primary" />,
+        icon: <MdDeviceHub className="w-5 h-5 text-primary" />,
         key: "devices",
         title: "Devices",
         path: "device",

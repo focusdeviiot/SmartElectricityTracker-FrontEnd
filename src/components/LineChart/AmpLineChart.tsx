@@ -112,10 +112,6 @@ const AmpLineChart: React.FC<AmpLineChartProps> = ({
   };
 
   useEffect(() => {
-    console.log("errors:", errors?.dateRange);
-  }, [errors?.dateRange]);
-
-  useEffect(() => {
     const fetchVoltUsage = async () => {
       try {
         // const response = { data: [] };

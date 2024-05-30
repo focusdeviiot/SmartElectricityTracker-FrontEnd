@@ -4,13 +4,14 @@ import PrivateRoute from "./components/PrivateRoute";
 import { MenuItem, menuData } from "./models/menuData";
 
 import Layout from "./components/Layout/Layout";
-import Login from "./components/Auth/Login";
-import Logout from "./components/Auth/Logout";
-import Home from "./pages/Home/Home";
-import Unauthorized from "./pages/Unauthorized/Unauthorized";
+import Login from "./pages/Auth/Login";
+import Logout from "./pages/Auth/Logout";
+import Home from "./pages/Home";
+import Unauthorized from "./pages/Unauthorized";
 import VoltUsage from "./pages/Report/VoltUsage";
 import AmpUsage from "./pages/Report/AmpUsage";
 import WattUsage from "./pages/Report/WattUsage";
+import Users from "./pages/Admin/Users";
 
 const mapComponent = (item: MenuItem) => {
   let component: JSX.Element | null;
@@ -36,6 +37,9 @@ const mapComponent = (item: MenuItem) => {
       break;
     case "watt-usage":
       component = <WattUsage />;
+      break;
+    case "users":
+      component = <Users />;
       break;
     default:
       component = <Home />;

@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAlert } from "../../contexts/AlertContext";
-import AsyncButton from "../AsyncButton/AsyncButton";
+import AsyncButton from "../../components/AsyncButton/AsyncButton";
 import { MdElectricBolt } from "react-icons/md";
 
 const Login = () => {
