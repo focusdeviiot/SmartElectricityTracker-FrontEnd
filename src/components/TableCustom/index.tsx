@@ -215,7 +215,7 @@ const TableCustom: React.FC<TableProps> = ({
               : data?.map((row) => (
                   <tr
                     key={row.id}
-                    className={` hover:bg-slate-50
+                    className={` hover:bg-base-200
                                     ${
                                       option?.select?.show &&
                                       (checkSelectedRows(row)
@@ -241,7 +241,7 @@ const TableCustom: React.FC<TableProps> = ({
                     {columns?.map((col) => (
                       <td
                         key={`${row.id}-${col.field}`}
-                        className={`text-xs font-normal ${
+                        className={`text-sm font-normal ${
                           col.rows?.className
                         } ${col.rows?.onClick ? "cursor-pointer" : ""}`}
                         onClick={(e) =>
@@ -263,7 +263,7 @@ const TableCustom: React.FC<TableProps> = ({
       {!hidePagination && data?.length > 0 && (
         <>
           <div className="flex flex-row space-x-4">
-            <div className="self-center mr-auto text-xs">
+            <div className="self-center mr-auto text-sm text-gray-500">
               Show: {paging?.totalElements} items
             </div>
             <div className="self-center">
