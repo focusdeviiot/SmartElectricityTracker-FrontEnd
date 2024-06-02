@@ -65,11 +65,11 @@ function PaginatedItems({ itemsPerPage, items, onPageChange, initPage }: AppProp
                         previousLabel=" <<"
                         renderOnZeroPageCount={null}
                         containerClassName="inline-flex flex-wrap"
-                        pageClassName="p-2 m-2 w-12 text-center hover:bg-slate-100 text-xs"
+                        pageClassName="p-2 m-2 w-12 border-none text-center hover:bg-gray-800 text-xs"
                         breakClassName="p-2 m-2"
-                        nextClassName="p-2 m-2 w-12 text-center hover:bg-slate-100"
-                        previousClassName="p-2 m-2 w-12 text-center hover:bg-slate-100"
-                        activeClassName="text-bold border-2 bg-slate-200 rounded"
+                        nextClassName="p-2 m-2 w-12 text-center hover:bg-gray-800"
+                        previousClassName="p-2 m-2 w-12 text-center hover:bg-gray-800"
+                        activeClassName="text-bold border-2 bg-gray-700 rounded"
                     />
                     <FormSelect onChange={(e) => {
                         // PageClick({ pageSize: +e.target.value, currentPage: 1, pageNumber: 1 })

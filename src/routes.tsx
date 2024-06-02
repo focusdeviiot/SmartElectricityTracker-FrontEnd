@@ -11,7 +11,7 @@ import Unauthorized from "./pages/Unauthorized";
 import VoltUsage from "./pages/Report/VoltUsage";
 import AmpUsage from "./pages/Report/AmpUsage";
 import WattUsage from "./pages/Report/WattUsage";
-import Users from "./pages/Admin/Users";
+import Users from "./pages/Admin/Users/Users";
 
 const mapComponent = (item: MenuItem) => {
   let component: JSX.Element | null;

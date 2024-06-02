@@ -20,8 +20,12 @@ const Login = () => {
       username: z
         .string()
         .regex(/^[a-zA-Z0-9]*$/, "Username must be alphanumeric")
+        .min(1, "Username is required")
         .max(50, "Username must be less than 50 characters"),
-      password: z.string().max(50, "Password must be less than 50 characters"),
+      password: z
+        .string()
+        .min(1, "Password is required")
+        .max(50, "Password must be less than 50 characters"),
     })
     .required();
   type FormFields = z.infer<typeof schema>;
