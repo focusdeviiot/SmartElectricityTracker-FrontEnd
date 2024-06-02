@@ -35,13 +35,22 @@ const DialogUserForm: React.FC<DialogAddUserProps> = ({
     confirm_password: z
       .string()
       .max(50, "Password must be less than 50 characters"),
-    role: z.string().refine((data) => data === "USER" || data === "ADMIN", {
-      message: "Role must be USER or ADMIN",
-    }),
+    role: z
+      .string()
+      .refine((data) => data === "USER" || data === "ADMIN" || data !== "", {
+        message: "Role must be USER or ADMIN",
+      }),
   });
 
   type FormFields = z.infer<typeof schema>;
   const formOptions = { resolver: zodResolver(schema) };
+  const defaultValues: FormFields = {
+    username: "",
+    name: "",
+    password: "",
+    confirm_password: "",
+    role: "",
+  };
   const {
     register,
     handleSubmit,
@@ -49,7 +58,7 @@ const DialogUserForm: React.FC<DialogAddUserProps> = ({
     reset,
     setError,
     formState: { errors },
-  } = useForm<FormFields>(formOptions);
+  } = useForm<FormFields>({ ...formOptions, defaultValues });
 
   const handleSave = async () => {
     const data = getValues();
@@ -134,7 +143,7 @@ const DialogUserForm: React.FC<DialogAddUserProps> = ({
               }`}
               title="Select Role"
             >
-              <option disabled selected>
+              <option value="" disabled selected>
                 Select Role
               </option>
               <option value="USER">USER</option>

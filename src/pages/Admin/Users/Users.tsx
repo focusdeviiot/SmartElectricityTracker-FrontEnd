@@ -14,10 +14,14 @@ import { z } from "zod";
 import { faker } from "@faker-js/faker";
 import { FaSearchengin, FaTrashCan } from "react-icons/fa6";
 import DialogUserForm, { DiglogType } from "./DialogUserForm";
+import DialogSetDevice from "./DialogSetDevice";
 import { DeviceID } from "../../../models/device";
+import { getUsersCountDevice } from "../../../api/api";
+import { previousDay } from "date-fns/fp";
 
 const UsersPage: React.FC<any> = () => {
   const [openDialog, setOpenDialog] = useState<null | DiglogType>(null);
+  const [openDialogDevice, setOpenDialogDevice] = useState<null | string>(null);
   const [dataTable, setDataTable] = useState<any>([]);
   const [paginate, setPaginate] = useState<PAGINATE>(() => INIT_PAGINATE);
   const optionTableCustom: OptionTableCustom = {
@@ -49,16 +53,23 @@ const UsersPage: React.FC<any> = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormFields>({...formOptions, defaultValues});
+  } = useForm<FormFields>({ ...formOptions, defaultValues });
+
+  const [searchBK, setSearchBK] = useState<FormFields>(defaultValues); // search backup
 
   const numberOfDevices = (row: any, field: string) => {
     return (
-      <button key={field} className="btn btn-sm bg-slate-800">
+      <AsyncButton
+        key={field}
+        className="btn btn-sm bg-slate-800 border-none shadow-none"
+        type="button"
+        onClick={() => Promise.resolve(setOpenDialogDevice(row["username"]))}
+      >
         <div className="badge bg-base-300 text-primary font-bold">
           {row[field]}
         </div>
-        <MdDeviceHub className="w-6 h-6" />
-      </button>
+        <MdDeviceHub className="w-6 h-6 text-primary" />
+      </AsyncButton>
     );
   };
 
@@ -128,7 +139,7 @@ const UsersPage: React.FC<any> = () => {
     },
     {
       title: "Number of Devices",
-      field: "number_device",
+      field: "device_count",
       columns: {
         className: "w-32 text-center",
       },
@@ -150,10 +161,32 @@ const UsersPage: React.FC<any> = () => {
     },
   ];
 
+  const getSearch = async (data: any) => {
+    console.log(data);
+    try {
+      const setData = { ...data, pageable: paginate };
+      const resp = await getUsersCountDevice(setData);
+      if (resp.success === false) return console.log(resp.message);
+      const respDataList = resp.data.data_list;
+      const respDataPageable = resp.data.pageable as PAGINATE;
+      if (!respDataList) {
+        setDataTable([]);
+        setPaginate(INIT_PAGINATE);
+      }
+      const dataTable = respDataList.map((item: any, index: number) => ({
+        ...item,
+        no: respDataPageable.pageNumber * respDataPageable.pageSize + index + 1,
+      }));
+      setDataTable(dataTable);
+      setPaginate(respDataPageable);
+      console.log(resp);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handlePageNumber = async (page: PAGINATE) => {
-    console.log(page);
-    setPaginate(page);
-    // setSearchBK((prev) => ({ ...prev, pageable: page }));
+    setSearchBK((prev) => ({ ...prev, pageable: page }));
   };
 
   const handleAddUser = async () => {
@@ -161,26 +194,18 @@ const UsersPage: React.FC<any> = () => {
   };
 
   const handleOnSearch = async (data: FormFields) => {
+    setSearchBK(data);
     console.log(data);
   };
 
   const handleOnClear = async () => {
     reset();
+    setSearchBK(defaultValues);
   };
 
   useEffect(() => {
-    const data = Array.from({ length: 10 }, (v, i) => {
-      return {
-        no: i + 1,
-        username: `user_${i + 1}`,
-        name: `Name ${i + 1}`,
-        role: "USER",
-        number_device: faker.number.int({ min: 0, max: 3 }),
-      };
-    });
-    setDataTable(data);
-    setPaginate((prev) => ({ ...prev, totalElements: 100 }));
-  }, []);
+    getSearch(searchBK);
+  }, [searchBK]);
 
   return (
     <>
@@ -195,9 +220,11 @@ const UsersPage: React.FC<any> = () => {
         <div className="flex flex-wrap justify-center gap-6 text-sm">
           <div className="flex flex-col gap-1 w-52">
             <label className="flex">Username</label>
-            <label className={`input input-bordered input-sm flex items-center gap-2 ${
+            <label
+              className={`input input-bordered input-sm flex items-center gap-2 ${
                 errors.username?.message && "input-error"
-              }`}>
+              }`}
+            >
               <input
                 {...register("username")}
                 type="username"
@@ -213,14 +240,12 @@ const UsersPage: React.FC<any> = () => {
 
           <div className="flex flex-col gap-1 w-52">
             <label className="flex">Name</label>
-            <label className={`input input-bordered input-sm flex items-center gap-2 ${
+            <label
+              className={`input input-bordered input-sm flex items-center gap-2 ${
                 errors.name?.message && "input-error"
-              }`}>
-              <input
-                {...register("name")}
-                type="name"
-                className="grow"
-              />
+              }`}
+            >
+              <input {...register("name")} type="name" className="grow" />
             </label>
             {errors.name?.message && (
               <p className="text-xs text-red-500 ml-1 mt-1">
@@ -308,6 +333,12 @@ const UsersPage: React.FC<any> = () => {
       />
 
       {openDialog && <DialogUserForm setOpenDialog={setOpenDialog} />}
+      {openDialogDevice && (
+        <DialogSetDevice
+          setOpenDialog={setOpenDialogDevice}
+          openDialog={openDialogDevice}
+        />
+      )}
     </>
   );
 };
