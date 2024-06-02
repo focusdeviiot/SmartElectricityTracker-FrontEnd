@@ -2,18 +2,17 @@ import React, { useEffect, useState } from "react";
 import TableCustom, {
   ColumnsTableCustom,
   OptionTableCustom,
-} from "../../components/TableCustom";
-import { INIT_PAGINATE, PAGINATE } from "../../models/pagination";
-import AsyncButton from "../../components/AsyncButton/AsyncButton";
+} from "../../../components/TableCustom";
+import { INIT_PAGINATE, PAGINATE } from "../../../models/pagination";
+import AsyncButton from "../../../components/AsyncButton/AsyncButton";
 import { AiOutlineUserAdd } from "react-icons/ai";
-// import { FaSearchengin, FaTrashCan } from "react-icons/fa6";
 import { IoSaveOutline } from "react-icons/io5";
 import { FaKey, FaUser, FaUserTag, FaRegEdit } from "react-icons/fa";
-import { MdDeleteForever } from "react-icons/md";
+import { MdDeleteForever, MdDeviceHub } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-// import { set } from "date-fns";
+import { faker } from "@faker-js/faker";
 
 enum DiglogType {
   ADD = "ADD",
@@ -65,6 +64,17 @@ const UsersPage: React.FC<any> = () => {
     formState: { errors },
   } = useForm<FormFields>(formOptions);
 
+  const numberOfDevices = (row: any, field: string) => {
+    return (
+      <button key={field} className="btn btn-sm bg-slate-800">
+        <div className="badge bg-base-300 text-primary font-bold">
+          {row[field]}
+        </div>
+        <MdDeviceHub className="w-6 h-6" />
+      </button>
+    );
+  };
+
   const actionTable = (row: any, field: string) => {
     return (
       <div key={field} className="flex justify-center gap-2">
@@ -74,7 +84,7 @@ const UsersPage: React.FC<any> = () => {
           type="button"
           onClick={() => Promise.resolve(console.log("Edit", row))}
         >
-          <FaRegEdit className="w-6 h-6"/>
+          <FaRegEdit className="w-6 h-6" />
         </AsyncButton>
         <AsyncButton
           className="btn-error btn-outline border-none shadow-none text-base-100 hover:bg-base-300"
@@ -82,7 +92,7 @@ const UsersPage: React.FC<any> = () => {
           type="button"
           onClick={() => Promise.resolve(console.log("Delete", row))}
         >
-          <MdDeleteForever className="w-6 h-6"/>
+          <MdDeleteForever className="w-6 h-6" />
         </AsyncButton>
       </div>
     );
@@ -130,13 +140,24 @@ const UsersPage: React.FC<any> = () => {
       },
     },
     {
+      title: "Number of Devices",
+      field: "number_device",
+      columns: {
+        className: "w-32 text-center",
+      },
+      rows: {
+        className: "w-32 text-center whitespace-nowrap",
+        rowRender: numberOfDevices,
+      },
+    },
+    {
       title: "Action",
       field: "action",
       columns: {
-        className: "w-40 text-center",
+        className: "w-32 text-center",
       },
       rows: {
-        className: "w-40 text-center whitespace-nowrap",
+        className: "w-32 text-center whitespace-nowrap",
         rowRender: actionTable,
       },
     },
@@ -170,6 +191,7 @@ const UsersPage: React.FC<any> = () => {
         username: `user_${i + 1}`,
         name: `Name ${i + 1}`,
         role: "USER",
+        number_device: faker.number.int({ min: 0, max: 3 }),
       };
     });
     setDataTable(data);
@@ -279,7 +301,8 @@ const UsersPage: React.FC<any> = () => {
                 <FaKey className="w-3 h-3 opacity-70" />
                 <input
                   {...register("confirm_password")}
-                  type="confirm_password"
+                  title="confirm_password"
+                  type="password"
                   className={`grow ${
                     errors.password?.confirm_password && "border-red-500"
                   }`}
