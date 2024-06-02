@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { faker } from "@faker-js/faker";
+import { FaSearchengin, FaTrashCan } from "react-icons/fa6";
 
 enum DiglogType {
   ADD = "ADD",
@@ -343,6 +344,98 @@ const UsersPage: React.FC<any> = () => {
     <>
       <h2 className="text-2xl font-bold text-center">User Management</h2>
       <p className="text-center text-gray-400">Manage your users</p>
+
+      <div className="flex flex-wrap justify-center gap-6 text-sm">
+        <div className="flex flex-col gap-1 w-52">
+          <label className="flex">Username</label>
+          <label className="input input-bordered input-sm flex items-center gap-2">
+            <input
+              {...register("username")}
+              type="username"
+              className={`grow ${errors.username?.message && "border-red-500"}`}
+            />
+          </label>
+          {errors.username?.message && (
+            <p className="text-xs text-red-500 ml-1 mt-1">
+              {errors.username?.message.toString()}
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1 w-52">
+          <label className="flex">Name</label>
+          <label className="input input-bordered input-sm flex items-center gap-2">
+            <input
+              {...register("name")}
+              type="name"
+              className={`grow ${errors.name?.message && "border-red-500"}`}
+            />
+          </label>
+          {errors.name?.message && (
+            <p className="text-xs text-red-500 ml-1 mt-1">
+              {errors.name?.message.toString()}
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1 w-52">
+          <label className="flex">Role</label>
+          <select
+            {...register("role")}
+            className={`select select-bordered select-sm w-full max-w-xs text-sm ${
+              errors.role?.message && "border-red-500"
+            }`}
+            title="Select Role"
+          >
+            <option value="*">All Role</option>
+            <option value="USER">USER</option>
+            <option value="ADMIN">ADMIN</option>
+          </select>
+          {errors.role?.message && (
+            <p className="text-xs text-red-500 ml-1 mt-1">
+              {errors.role?.message.toString()}
+            </p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1 w-52">
+          <label className="flex">Device name</label>
+          <label className="input input-bordered input-sm flex items-center gap-2">
+            <input
+              {...register("name")}
+              type="name"
+              className={`grow ${errors.name?.message && "border-red-500"}`}
+            />
+          </label>
+          {errors.name?.message && (
+            <p className="text-xs text-red-500 ml-1 mt-1">
+              {errors.name?.message.toString()}
+            </p>
+          )}
+        </div>
+
+      </div>
+
+      <div className="m-4 flex justify-center gap-3">
+            <AsyncButton
+              className="mb-1 bg-gray-400 border-none shadow-none hover:bg-gray-500"
+              title="Clear"
+              type="reset"
+              // loading={loading}
+            >
+              <FaTrashCan className="h-4 w-4" /> Clear
+            </AsyncButton>
+            <AsyncButton
+              className="mb-1"
+              title="Search"
+              type="submit"
+              // loading={loading}
+            >
+              <FaSearchengin className="h-4 w-4" /> Search
+            </AsyncButton>
+          </div>
+
+      
 
       <div className="mt-10 mb-2 flex justify-end">
         <AsyncButton title="Login" type="button" onClick={handleAddUser}>
