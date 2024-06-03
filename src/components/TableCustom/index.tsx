@@ -204,7 +204,7 @@ const TableCustom: React.FC<TableProps> = ({
           <tbody>
             {data?.length === 0
               ? option?.placeholder && (
-                  <tr>
+                  <tr key={"placeholder"}>
                     <td colSpan={columns.length} key={"placeholder"}>
                       <div className="flex justify-center text-sm text-gray-300 py-2 font-medium">
                         {option?.placeholder}
@@ -214,7 +214,7 @@ const TableCustom: React.FC<TableProps> = ({
                 )
               : data?.map((row) => (
                   <tr
-                    key={row.id}
+                    key={row.no}
                     className={` hover:bg-base-200
                                     ${
                                       option?.select?.show &&
@@ -240,7 +240,7 @@ const TableCustom: React.FC<TableProps> = ({
                     )}
                     {columns?.map((col) => (
                       <td
-                        key={`${row.id}-${col.field}`}
+                        key={`${row.no}-${col.field}`}
                         className={`text-sm font-normal ${
                           col.rows?.className
                         } ${col.rows?.onClick ? "cursor-pointer" : ""}`}
