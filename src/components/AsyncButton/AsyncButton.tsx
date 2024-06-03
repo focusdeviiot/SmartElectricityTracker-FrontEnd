@@ -22,7 +22,7 @@ const AsyncButton: React.FC<AsyncButtonProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const handleClick = async () => {
-    if (!onClick) return;
+    if (!onClick || loadingValid) return;
     setIsLoading(true);
     try {
       await onClick();

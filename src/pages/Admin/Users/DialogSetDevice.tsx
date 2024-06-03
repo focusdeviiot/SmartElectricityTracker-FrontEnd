@@ -1,17 +1,30 @@
 import AsyncButton from "../../../components/AsyncButton/AsyncButton";
 import { IoSaveOutline } from "react-icons/io5";
 // import { FaKey, FaUser, FaUserTag } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { DeviceID } from "../../../models/device";
+import { updateUserDevice } from "../../../api/api";
+import { useAlert } from "../../../contexts/AlertContext";
 
-export interface DialogAddUserProps {
-  openDialog: null | string;
-  setOpenDialog: (value: null | string) => void;
+export interface DialogUserDeviceList {
+  user_id: string;
+  device_id?: string[];
 }
 
-const DialogUserForm: React.FC<DialogAddUserProps> = ({
+export interface OpenDialogDataDevice extends DialogUserDeviceList {
+  username: string;
+}
+
+export interface DialogSetDeviceProps {
+  openDialog: null | OpenDialogDataDevice;
+  setOpenDialog: (value: null | OpenDialogDataDevice) => void;
+}
+
+const DialogSetDevice: React.FC<DialogSetDeviceProps> = ({
   openDialog,
   setOpenDialog,
 }) => {
+  const { showAlert } = useAlert();
   const [device01, setDevice01] = useState(false);
   const [device02, setDevice02] = useState(false);
   const [device03, setDevice03] = useState(false);
@@ -29,12 +42,50 @@ const DialogUserForm: React.FC<DialogAddUserProps> = ({
   };
 
   const handleSave = async () => {
-    setOpenDialog(null);
+    if (!openDialog?.user_id) return;
+
+    const device_id: string[] = [];
+    if (device01) device_id.push(DeviceID.DEVICE1);
+    if (device02) device_id.push(DeviceID.DEVICE2);
+    if (device03) device_id.push(DeviceID.DEVICE3);
+
+    const dataUpdate: DialogUserDeviceList = {
+      user_id: openDialog?.user_id ?? "",
+      device_id,
+    };
+
+    try {
+      const response = await updateUserDevice(dataUpdate);
+      if (response?.success === true) {
+        setOpenDialog(null);
+      }
+    } catch (error: any) {
+      console.error(error);
+      showAlert("Failed to update device", "error");
+    }
   };
 
   const handleCancel = async () => {
     setOpenDialog(null);
   };
+
+  useEffect(() => {
+    if (openDialog?.device_id) {
+      setDevice01(openDialog?.device_id.includes(DeviceID.DEVICE1));
+      setDevice02(openDialog?.device_id.includes(DeviceID.DEVICE2));
+      setDevice03(openDialog?.device_id.includes(DeviceID.DEVICE3));
+    } else {
+      setDevice01(false);
+      setDevice02(false);
+      setDevice03(false);
+    }
+
+    return () => {
+      setDevice01(false);
+      setDevice02(false);
+      setDevice03(false);
+    };
+  }, [openDialog]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -42,8 +93,10 @@ const DialogUserForm: React.FC<DialogAddUserProps> = ({
       <div className="modal-box">
         <h3 className="font-bold text-lg text-center">Setting Device</h3>
         <p className="flex justify-center text-gray-400">
-          Setting devices for username :{" "}
-          <p className="font-bold text-gray-300">&nbsp;{openDialog}</p>
+          Setting devices for username :
+          <p className="font-bold text-gray-300">
+            &nbsp;{openDialog?.username}
+          </p>
         </p>
 
         <div className="m-4 flex flex-col items-center">
@@ -105,4 +158,4 @@ const DialogUserForm: React.FC<DialogAddUserProps> = ({
   );
 };
 
-export default DialogUserForm;
+export default DialogSetDevice;

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import TableCustom, {
   ColumnsTableCustom,
@@ -11,17 +12,18 @@ import { MdDeleteForever, MdDeviceHub } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { faker } from "@faker-js/faker";
 import { FaSearchengin, FaTrashCan } from "react-icons/fa6";
 import DialogUserForm, { DiglogType } from "./DialogUserForm";
-import DialogSetDevice from "./DialogSetDevice";
+import DialogSetDevice, { OpenDialogDataDevice } from "./DialogSetDevice";
 import { DeviceID } from "../../../models/device";
-import { getUsersCountDevice } from "../../../api/api";
-import { previousDay } from "date-fns/fp";
+import { getUsersCountDevice, getUsersDeviceByUserID } from "../../../api/api";
+import { useAlert } from "../../../contexts/AlertContext";
 
 const UsersPage: React.FC<any> = () => {
+  const { showAlert } = useAlert();
   const [openDialog, setOpenDialog] = useState<null | DiglogType>(null);
-  const [openDialogDevice, setOpenDialogDevice] = useState<null | string>(null);
+  const [openDialogDevice, setOpenDialogDevice] =
+    useState<null | OpenDialogDataDevice>(null);
   const [dataTable, setDataTable] = useState<any>([]);
   const [paginate, setPaginate] = useState<PAGINATE>(() => INIT_PAGINATE);
   const optionTableCustom: OptionTableCustom = {
@@ -56,6 +58,7 @@ const UsersPage: React.FC<any> = () => {
   } = useForm<FormFields>({ ...formOptions, defaultValues });
 
   const [searchBK, setSearchBK] = useState<FormFields>(defaultValues); // search backup
+  const [searchLoading, setSearchLoading] = useState<boolean>(true);
 
   const numberOfDevices = (row: any, field: string) => {
     return (
@@ -63,7 +66,7 @@ const UsersPage: React.FC<any> = () => {
         key={field}
         className="btn btn-sm bg-slate-800 border-none shadow-none"
         type="button"
-        onClick={() => Promise.resolve(setOpenDialogDevice(row["username"]))}
+        onClick={() => getUserDevice(row["user_id"], row["username"])}
       >
         <div className="badge bg-base-300 text-primary font-bold">
           {row[field]}
@@ -163,15 +166,17 @@ const UsersPage: React.FC<any> = () => {
 
   const getSearch = async (data: any) => {
     console.log(data);
+    setSearchLoading(true);
     try {
       const setData = { ...data, pageable: paginate };
       const resp = await getUsersCountDevice(setData);
-      if (resp.success === false) return console.log(resp.message);
+      if (resp.success === false) throw new Error(resp.message);
       const respDataList = resp.data.data_list;
       const respDataPageable = resp.data.pageable as PAGINATE;
       if (!respDataList) {
         setDataTable([]);
         setPaginate(INIT_PAGINATE);
+        return;
       }
       const dataTable = respDataList.map((item: any, index: number) => ({
         ...item,
@@ -186,6 +191,34 @@ const UsersPage: React.FC<any> = () => {
       console.log(resp);
     } catch (error) {
       console.log(error);
+      showAlert("Failed to Search data", "error");
+    } finally {
+      setTimeout(() => {
+        setSearchLoading(false);
+      }, 200);
+    }
+  };
+
+  const getUserDevice = async (user_id: string, username: string) => {
+    try {
+      const res = await getUsersDeviceByUserID({ user_id });
+      console.log(res);
+      if (res.success === false) throw new Error(res.message);
+      const dataUserDevice = res.data.data_list;
+
+      const dataUser: OpenDialogDataDevice = {
+        user_id,
+        username,
+        device_id: dataUserDevice?.map(
+          (item: any) => item.device_id
+        ) as string[],
+      };
+
+      setOpenDialogDevice(dataUser);
+    } catch (error) {
+      console.log(error);
+      showAlert("Failed to get UserDevice", "error");
+      setOpenDialogDevice(null);
     }
   };
 
@@ -205,6 +238,11 @@ const UsersPage: React.FC<any> = () => {
   const handleOnClear = async () => {
     reset();
     setSearchBK(defaultValues);
+  };
+
+  const handleOnCloseDialog = (data) => {
+    setOpenDialogDevice(data);
+    getSearch(searchBK);
   };
 
   useEffect(() => {
@@ -307,7 +345,6 @@ const UsersPage: React.FC<any> = () => {
             className="mb-1 bg-gray-400 border-none shadow-none hover:bg-gray-500"
             title="Clear"
             type="reset"
-            // loading={loading}
           >
             <FaTrashCan className="h-4 w-4" /> Clear
           </AsyncButton>
@@ -315,7 +352,7 @@ const UsersPage: React.FC<any> = () => {
             className="mb-1"
             title="Search"
             type="submit"
-            // loading={loading}
+            loading={searchLoading}
           >
             <FaSearchengin className="h-4 w-4" /> Search
           </AsyncButton>
@@ -339,7 +376,7 @@ const UsersPage: React.FC<any> = () => {
       {openDialog && <DialogUserForm setOpenDialog={setOpenDialog} />}
       {openDialogDevice && (
         <DialogSetDevice
-          setOpenDialog={setOpenDialogDevice}
+          setOpenDialog={handleOnCloseDialog}
           openDialog={openDialogDevice}
         />
       )}
