@@ -175,7 +175,11 @@ const UsersPage: React.FC<any> = () => {
       }
       const dataTable = respDataList.map((item: any, index: number) => ({
         ...item,
-        no: respDataPageable.pageNumber * respDataPageable.pageSize + index + 1,
+        no:
+          respDataPageable.pageNumber * respDataPageable.pageSize +
+          index +
+          1 -
+          respDataPageable.pageSize,
       }));
       setDataTable(dataTable);
       setPaginate(respDataPageable);
