@@ -13,16 +13,21 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FaSearchengin, FaTrashCan } from "react-icons/fa6";
-import DialogUserForm, { DiglogType } from "./DialogUserForm";
+import DialogUserForm, {
+  DiglogType,
+  openDialogUserData,
+  User,
+} from "./DialogUserForm";
 import DialogSetDevice, { OpenDialogDataDevice } from "./DialogSetDevice";
 import { DeviceID } from "../../../models/device";
-import { getUsersCountDevice, getUsersDeviceByUserID } from "../../../api/api";
+import { getUserByUserId, getUsersCountDevice, getUsersDeviceByUserID } from "../../../api/api";
 import { useAlert } from "../../../contexts/AlertContext";
 
 const UsersPage: React.FC<any> = () => {
   const { showAlert } = useAlert();
-  const [openDialog, setOpenDialog] = useState<null | DiglogType>(null);
-  const [openDialogDevice, setOpenDialogDevice] =
+  const [openUserDialog, setOpenUserDialog] =
+    useState<null | openDialogUserData>(null);
+  const [openDeviceDialog, setOpenDeviceDialog] =
     useState<null | OpenDialogDataDevice>(null);
   const [dataTable, setDataTable] = useState<any>([]);
   const [paginate, setPaginate] = useState<PAGINATE>(() => INIT_PAGINATE);
@@ -83,7 +88,7 @@ const UsersPage: React.FC<any> = () => {
           className="mb-1 btn-outline border-none shadow-none hover:bg-gray-500"
           title="Edit"
           type="button"
-          onClick={() => Promise.resolve(console.log("Edit", row))}
+          onClick={() => handleEditUser(row["user_id"])}
         >
           <FaRegEdit className="w-6 h-6" />
         </AsyncButton>
@@ -214,11 +219,11 @@ const UsersPage: React.FC<any> = () => {
         ) as string[],
       };
 
-      setOpenDialogDevice(dataUser);
+      setOpenDeviceDialog(dataUser);
     } catch (error) {
       console.log(error);
       showAlert("Failed to get UserDevice", "error");
-      setOpenDialogDevice(null);
+      setOpenDeviceDialog(null);
     }
   };
 
@@ -227,8 +232,23 @@ const UsersPage: React.FC<any> = () => {
   };
 
   const handleAddUser = async () => {
-    setOpenDialog(DiglogType.ADD);
+    setOpenUserDialog({ type: DiglogType.ADD, data: null });
   };
+
+  const handleEditUser = async (user_id: string) => {
+    try{
+      const response = await getUserByUserId({ user_id });
+      if(response.success === false) throw new Error(response.message);
+      const dataUser: User = response.data.user;
+      if(!dataUser) throw new Error("User not found");
+      setOpenUserDialog({ type: DiglogType.EDIT, data: dataUser });
+    }catch(error:any){
+      console.log(error);
+      showAlert(`Failed to get User : ${error?.message}`, "error");
+      setOpenUserDialog(null);
+    }
+    
+  }
 
   const handleOnSearch = async (data: FormFields) => {
     setSearchBK(data);
@@ -240,8 +260,13 @@ const UsersPage: React.FC<any> = () => {
     setSearchBK(defaultValues);
   };
 
-  const handleOnCloseDialog = (data) => {
-    setOpenDialogDevice(data);
+  const handleOnCloseUserDialog = (data) => {
+    setOpenUserDialog(data);
+    getSearch(searchBK);
+  };
+
+  const handleOnCloseDeviceDialog = (data) => {
+    setOpenDeviceDialog(data);
     getSearch(searchBK);
   };
 
@@ -373,11 +398,16 @@ const UsersPage: React.FC<any> = () => {
         onChange={(page: any) => handlePageNumber(page)}
       />
 
-      {openDialog && <DialogUserForm setOpenDialog={setOpenDialog} />}
-      {openDialogDevice && (
+      {openUserDialog && (
+        <DialogUserForm
+          openDialog={openUserDialog}
+          setOpenDialog={handleOnCloseUserDialog}
+        />
+      )}
+      {openDeviceDialog && (
         <DialogSetDevice
-          setOpenDialog={handleOnCloseDialog}
-          openDialog={openDialogDevice}
+          setOpenDialog={handleOnCloseDeviceDialog}
+          openDialog={openDeviceDialog}
         />
       )}
     </>
