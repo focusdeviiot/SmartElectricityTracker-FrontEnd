@@ -113,7 +113,10 @@ const DialogUserForm: React.FC<DialogAddUserProps> = ({
           setOpenDialog(null);
         } catch (error: any) {
           console.log(error);
-          showAlert(`Ceate user error : ${error.message}`, "error");
+          showAlert(
+            `Ceate user error : ${error?.response.data.message}`,
+            "error"
+          );
         }
       } else {
         try {
@@ -129,7 +132,10 @@ const DialogUserForm: React.FC<DialogAddUserProps> = ({
           setOpenDialog(null);
         } catch (error: any) {
           console.log(error);
-          showAlert(`Update user error : ${error.message}`, "error");
+          showAlert(
+            `Update user error : ${error?.response.data.message}`,
+            "error"
+          );
         }
       }
 

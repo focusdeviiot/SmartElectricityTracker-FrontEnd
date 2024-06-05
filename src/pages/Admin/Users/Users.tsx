@@ -20,7 +20,12 @@ import DialogUserForm, {
 } from "./DialogUserForm";
 import DialogSetDevice, { OpenDialogDataDevice } from "./DialogSetDevice";
 import { DeviceID } from "../../../models/device";
-import { getUserByUserId, getUsersCountDevice, getUsersDeviceByUserID } from "../../../api/api";
+import {
+  deleteUser,
+  getUserByUserId,
+  getUsersCountDevice,
+  getUsersDeviceByUserID,
+} from "../../../api/api";
 import { useAlert } from "../../../contexts/AlertContext";
 
 const UsersPage: React.FC<any> = () => {
@@ -96,7 +101,7 @@ const UsersPage: React.FC<any> = () => {
           className="btn-error btn-outline border-none shadow-none text-base-100 hover:bg-base-300"
           title="Delete"
           type="button"
-          onClick={() => Promise.resolve(console.log("Delete", row))}
+          onClick={() => handleDelete(row["user_id"])}
         >
           <MdDeleteForever className="w-6 h-6" />
         </AsyncButton>
@@ -194,9 +199,11 @@ const UsersPage: React.FC<any> = () => {
       setDataTable(dataTable);
       setPaginate(respDataPageable);
       console.log(resp);
-    } catch (error) {
-      console.log(error);
-      showAlert("Failed to Search data", "error");
+    } catch (error:any) {
+      showAlert(
+        `Failed to Search data : ${error?.response.data.message}`,
+        "error"
+      );
     } finally {
       setTimeout(() => {
         setSearchLoading(false);
@@ -220,9 +227,12 @@ const UsersPage: React.FC<any> = () => {
       };
 
       setOpenDeviceDialog(dataUser);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      showAlert("Failed to get UserDevice", "error");
+      showAlert(
+        `Failed to get UserDevice : ${error?.response.data.message}`,
+        "error"
+      );
       setOpenDeviceDialog(null);
     }
   };
@@ -236,19 +246,37 @@ const UsersPage: React.FC<any> = () => {
   };
 
   const handleEditUser = async (user_id: string) => {
-    try{
+    try {
       const response = await getUserByUserId({ user_id });
-      if(response.success === false) throw new Error(response.message);
+      if (response.success === false) throw new Error(response.message);
       const dataUser: User = response.data.user;
-      if(!dataUser) throw new Error("User not found");
+      if (!dataUser) throw new Error("User not found");
       setOpenUserDialog({ type: DiglogType.EDIT, data: dataUser });
-    }catch(error:any){
+    } catch (error: any) {
       console.log(error);
-      showAlert(`Failed to get User : ${error?.message}`, "error");
+      showAlert(
+        `Failed to edit user : ${error?.response.data.message}`,
+        "error"
+      );
       setOpenUserDialog(null);
     }
-    
-  }
+  };
+
+  const handleDelete = async (user_id: string) => {
+    console.log("Delete", user_id);
+    try {
+      const response = await deleteUser({ user_id });
+      if (response.success === false) throw new Error(response.message);
+      showAlert("Delete User Success", "success");
+      getSearch(searchBK);
+    } catch (error: any) {
+      console.log(error);
+      showAlert(
+        `Failed to delete user : ${error?.response.data.message}`,
+        "error"
+      );
+    }
+  };
 
   const handleOnSearch = async (data: FormFields) => {
     setSearchBK(data);

@@ -57,11 +57,12 @@ const DialogSetDevice: React.FC<DialogSetDeviceProps> = ({
     try {
       const response = await updateUserDevice(dataUpdate);
       if (response?.success === true) {
+        showAlert("Device updated successfully", "success");
         setOpenDialog(null);
       }
     } catch (error: any) {
       console.error(error);
-      showAlert("Failed to update device", "error");
+      showAlert(`Failed to update device ${error?.response.data.message}`, "error");
     }
   };
 

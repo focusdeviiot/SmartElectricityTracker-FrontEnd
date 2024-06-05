@@ -39,6 +39,17 @@ export const updateUser = async (data): Promise<Response> => {
     }
 }
 
+export const deleteUser = async (data): Promise<Response> => {
+    try {
+        const response = await apiClient.delete<Response>('admin/user', {
+            params: { ...data }
+        });
+        return response.data;
+    } catch (error: any) {
+        return Promise.reject(error);
+    }
+}
+
 export const getUserByUserId = async (data): Promise<Response> => {
     try {
         const response = await apiClient.get<Response>('admin/user', {
