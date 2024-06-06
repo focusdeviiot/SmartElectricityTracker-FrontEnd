@@ -79,6 +79,7 @@ export const menuData: MenuItem[] = [
     key: "admin",
     title: "Admin management",
     path: "admin",
+    role: [Role.ADMIN],
     children: [
       {
         icon: <FaUserEdit className="w-5 h-5 text-primary" />,

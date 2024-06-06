@@ -4,20 +4,38 @@ import { z } from "zod";
 import AsyncButton from "../../../components/AsyncButton/AsyncButton";
 import { IoSaveOutline } from "react-icons/io5";
 import { FaKey, FaUser, FaUserTag } from "react-icons/fa";
-
-export interface DialogAddUserProps {
-  setOpenDialog: (value: null | DiglogType) => void;
-}
+import { Role } from "../../../models/role";
+import { createUser, updateUser } from "../../../api/api";
+import { useAlert } from "../../../contexts/AlertContext";
+import { useEffect, useState } from "react";
 
 export enum DiglogType {
   ADD = "ADD",
   EDIT = "EDIT",
 }
 
+export interface User {
+  user_id: number;
+  username: string;
+  name: string;
+  role: Role;
+}
+
+export interface openDialogUserData {
+  type: DiglogType;
+  data: User | null | undefined;
+}
+
+export interface DialogAddUserProps {
+  openDialog: openDialogUserData;
+  setOpenDialog: (value: null | openDialogUserData) => void;
+}
+
 const DialogUserForm: React.FC<DialogAddUserProps> = ({
-  //   openDialog,
+  openDialog,
   setOpenDialog,
 }) => {
+  const { showAlert } = useAlert();
   const schema = z.object({
     username: z
       .string()
@@ -59,21 +77,73 @@ const DialogUserForm: React.FC<DialogAddUserProps> = ({
     setError,
     formState: { errors },
   } = useForm<FormFields>({ ...formOptions, defaultValues });
+  const [loading, setLoading] = useState(false);
 
   const handleSave = async () => {
+    if (loading) return;
+    setLoading(true);
     const data = getValues();
-    console.log(data);
-    if (data.password !== data.confirm_password) {
-      setError("confirm_password", {
-        type: "manual",
-        message: "Password and Confirm Password must be the same",
-      });
 
-      return;
+    try {
+      if (openDialog.type === DiglogType.ADD && data.password.length < 5) {
+        setError("password", {
+          type: "manual",
+          message: "Password must be at least 5 characters",
+        });
+        return;
+      }
+
+      if (data.password.length > 0 && data.password !== data.confirm_password) {
+        setError("confirm_password", {
+          type: "manual",
+          message: "Password and Confirm Password must be the same",
+        });
+        return;
+      }
+
+      const field: string = "confirm_password";
+      delete data[field];
+
+      if (openDialog.type === DiglogType.ADD) {
+        try {
+          const response = await createUser(data);
+          if (response?.success === true) {
+            showAlert("User created successfully", "success");
+          }
+          setOpenDialog(null);
+        } catch (error: any) {
+          console.log(error);
+          showAlert(
+            `Ceate user error : ${error?.response.data.message}`,
+            "error"
+          );
+        }
+      } else {
+        try {
+          const dataEdit = { ...data, user_id: openDialog.data?.user_id };
+          if (dataEdit.password.length < 1) {
+            const field: string = "password";
+            delete data[field];
+          }
+          const response = await updateUser(dataEdit);
+          if (response?.success === true) {
+            showAlert("User updated successfully", "success");
+          }
+          setOpenDialog(null);
+        } catch (error: any) {
+          console.log(error);
+          showAlert(
+            `Update user error : ${error?.response.data.message}`,
+            "error"
+          );
+        }
+      }
+
+      reset();
+      setOpenDialog(null);
+    } finally {
+      setLoading(false);
     }
-
-    reset();
-    setOpenDialog(null);
   };
 
   const handleCancel = async () => {
@@ -81,14 +151,24 @@ const DialogUserForm: React.FC<DialogAddUserProps> = ({
     setOpenDialog(null);
   };
 
+  useEffect(() => {
+    if (openDialog.type === DiglogType.EDIT && openDialog.data) {
+      const { username, name, role } = openDialog.data;
+      reset({ username, name, role });
+    }
+  }, [openDialog]);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="absolute inset-0 bg-base-200 bg-opacity-30 backdrop-blur-sm"></div>
       <div className="modal-box">
-        <h3 className="font-bold text-lg text-center">Add User</h3>
+        <h3 className="font-bold text-lg text-center">
+          {openDialog.type === DiglogType.ADD ? "Add" : "Edit"} User
+        </h3>
         <form
           onSubmit={handleSubmit(handleSave)}
           onReset={handleCancel}
+          autoComplete="false"
           className="flex flex-col items-center gap-2 mt-4"
         >
           <div className="flex flex-col gap-1 w-72">
@@ -105,6 +185,7 @@ const DialogUserForm: React.FC<DialogAddUserProps> = ({
               <input
                 {...register("username")}
                 type="username"
+                disabled={openDialog.type === DiglogType.EDIT}
                 className="grow"
               />
             </label>
@@ -170,6 +251,7 @@ const DialogUserForm: React.FC<DialogAddUserProps> = ({
                 {...register("password")}
                 type="password"
                 className="grow"
+                // autoComplete="off"
               />
             </label>
             {errors.password?.message && (
@@ -194,6 +276,7 @@ const DialogUserForm: React.FC<DialogAddUserProps> = ({
                 title="confirm_password"
                 type="password"
                 className="grow"
+                // autoComplete="off"
               />
             </label>
             {errors.confirm_password?.message && (
@@ -214,9 +297,9 @@ const DialogUserForm: React.FC<DialogAddUserProps> = ({
             </AsyncButton>
             <AsyncButton
               className="mb-1 w-28"
-              title="Search"
+              title="Submit"
               type="submit"
-              // loading={loading}
+              loading={loading}
             >
               <IoSaveOutline className="h-4 w-4" /> Save
             </AsyncButton>
