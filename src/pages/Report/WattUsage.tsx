@@ -1,31 +1,38 @@
-// import { useEffect, useState } from "react";
+import { getDeviceByUserID } from "../../api/api";
+import { useEffect, useState } from "react";
+import { useAlert } from "../../contexts/AlertContext";
 import WattLineChart from "../../components/LineChart/WattLineChart";
 
+interface Device {
+  user_id: string;
+  device_id: string;
+}
+
 const WattUsage = () => {
-  const listDevices = [
-    {
-      DeviceName: "Device 1",
-      DeviceUuid: "123",
-    },
-    {
-      DeviceName: "Device 2",
-      DeviceUuid: "456",
-    },
-    {
-      DeviceName: "Device 3",
-      DeviceUuid: "789",
-    },
-  ];
+  const { showAlert } = useAlert();
+  const [listDevices, setListDevices] = useState<Device[]>([]); // [{}
+
+  useEffect(() => {
+    getDeviceByUserID()
+      .then((response) => {
+        if (response.success === true) {
+          setListDevices(response.data.data_list);
+        }
+      })
+      .catch((error) => {
+        showAlert(error.response.data.message, "error");
+      });
+  }, []);
 
   return (
     <div>
       <h2 className="text-2xl font-bold text-center">Watt Usage</h2>
       <p className="text-center text-gray-400">
-        Report of your electricity usage in Watt
+        Report of your electricity usage in watts
       </p>
 
       {listDevices.map((device) => (
-        <WattLineChart key={device.DeviceUuid} DeviceName={device.DeviceName} />
+        <WattLineChart key={device.device_id} DeviceUuid={device.device_id} />
       ))}
     </div>
   );
