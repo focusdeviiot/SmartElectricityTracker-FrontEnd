@@ -8,7 +8,7 @@ interface AsyncButtonProps {
   children: React.ReactNode;
   className?: string;
   loading?: boolean;
-  disbale?: boolean;
+  disabled?: boolean;
 }
 
 const AsyncButton: React.FC<AsyncButtonProps> = ({
@@ -18,7 +18,7 @@ const AsyncButton: React.FC<AsyncButtonProps> = ({
   children,
   className,
   loading,
-  disbale,
+  disabled ,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const handleClick = async () => {
@@ -49,12 +49,12 @@ const AsyncButton: React.FC<AsyncButtonProps> = ({
       title={title}
       type={type}
       onClick={type === "button" ? handleClick : undefined} // ถ้าเป็น submit หรือ reset ให้ไม่ต้องเรียก handleClick
-      disabled={disbale}
+      disabled={disabled}
       className={cn( 
-        "btn btn-primary btn-sm shadow-lg shadow-blue-500/50 disabled:opacity-50 disabled:bg-blue-500 disabled:text-base-300",
+        "btn btn-primary btn-sm shadow-lg shadow-blue-500/50 disabled:opacity-50 disabled:bg-blue-500 disabled:text-base-300 disabled:shadow-none",
         className,
         loadingValid && "!cursor-progress",
-        disbale && "!cursor-no-drop"
+        disabled  && "!cursor-no-drop"
       )}
     >
       {loadingValid ? <ButtonLoading /> : children}

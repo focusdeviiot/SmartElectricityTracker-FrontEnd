@@ -1,21 +1,29 @@
 // import { useEffect, useState } from "react";
 import VoltLineChart from "../../components/LineChart/VoltLineChart";
+import { getDeviceByUserID } from "../../api/api";
+import { useEffect, useState } from "react";
+import { useAlert } from "../../contexts/AlertContext";
+
+interface Device {
+  user_id: string;
+  device_id: string;
+}
 
 const VoltUsage = () => {
-  const listDevices = [
-    {
-      DeviceName: "Device 1",
-      DeviceUuid: "123",
-    },
-    {
-      DeviceName: "Device 2",
-      DeviceUuid: "456",
-    },
-    {
-      DeviceName: "Device 3",
-      DeviceUuid: "789",
-    },
-  ];
+  const { showAlert } = useAlert();
+  const [listDevices, setListDevices] = useState<Device[]>([]); // [{}
+
+  useEffect(() => {
+    getDeviceByUserID()
+      .then((response) => {
+        if (response.success === true) {
+          setListDevices(response.data.data_list);
+        }
+      })
+      .catch((error) => {
+        showAlert(error.response.data.message, "error");
+      });
+  }, []);
 
   return (
     <div>
@@ -25,7 +33,7 @@ const VoltUsage = () => {
       </p>
 
       {listDevices.map((device) => (
-        <VoltLineChart key={device.DeviceUuid} DeviceName={device.DeviceName} />
+        <VoltLineChart key={device.device_id} DeviceUuid={device.device_id} />
       ))}
     </div>
   );

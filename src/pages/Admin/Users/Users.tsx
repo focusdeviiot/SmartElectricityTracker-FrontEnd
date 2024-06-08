@@ -316,7 +316,7 @@ const UsersPage: React.FC<any> = () => {
           <div className="flex flex-col gap-1 w-52">
             <label className="flex">Username</label>
             <label
-              className={`input input-bordered input-sm flex items-center gap-2 ${
+              className={`input input-bordered input-md flex items-center gap-2 ${
                 errors.username?.message && "input-error"
               }`}
             >
@@ -336,7 +336,7 @@ const UsersPage: React.FC<any> = () => {
           <div className="flex flex-col gap-1 w-52">
             <label className="flex">Name</label>
             <label
-              className={`input input-bordered input-sm flex items-center gap-2 ${
+              className={`input input-bordered input-md flex items-center gap-2 ${
                 errors.name?.message && "input-error"
               }`}
             >
@@ -353,7 +353,7 @@ const UsersPage: React.FC<any> = () => {
             <label className="flex">Role</label>
             <select
               {...register("role")}
-              className={`select select-bordered select-sm w-full max-w-xs text-sm ${
+              className={`select select-bordered select-md w-full max-w-xs text-sm ${
                 errors.role?.message && "select-error"
               }`}
               title="Select Role"
@@ -373,7 +373,7 @@ const UsersPage: React.FC<any> = () => {
             <label className="flex">Device ID</label>
             <select
               {...register("device_id")}
-              className={`select select-bordered select-sm w-full max-w-xs text-sm ${
+              className={`select select-bordered select-md w-full max-w-xs text-sm ${
                 errors.device_id?.message && "select-error"
               }`}
               title="Select Role"

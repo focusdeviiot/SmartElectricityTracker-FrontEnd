@@ -1,31 +1,36 @@
-// import LineChart, { LimitProps, LineChartProps } from "./LineChart";
+
 import LineChart, { LimitProps, DatasetsProps } from "./LineChart";
-import Datepicker, { DateValueType } from "react-tailwindcss-datepicker";
 import AsyncButton from "../AsyncButton/AsyncButton";
 import { FaSearchengin } from "react-icons/fa";
 import { FaTrashCan } from "react-icons/fa6";
-import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { differenceInMonths, endOfDay, startOfDay } from "date-fns/fp";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { ReportDeviceRequest } from "../../models/device";
+import { getReportDeviceVolt } from "../../api/api";
+import { useAlert } from "../../contexts/AlertContext";
+import DatePicker from "react-datepicker";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Controller, useForm } from "react-hook-form";
+import ExportToExcel from "../ExportToExcel";
 
 export interface VoltLineChartProps {
-  DeviceName: string;
-  DeviceUuid?: string;
+  DeviceName?: string;
+  DeviceUuid: string;
 }
 
 const VoltLineChart: React.FC<VoltLineChartProps> = ({
-  DeviceName,
-  // DeviceUuid,
+  // DeviceName,
+  DeviceUuid,
 }) => {
+  const { showAlert } = useAlert();
   const schema = z
     .object({
       dateRange: z
         .object({
-          startDate: z.string().nullable(),
-          endDate: z.string().nullable(),
+          startDate: z.date().nullable(),
+          endDate: z.date().nullable(),
         })
         .refine((data) => data.startDate && data.endDate, {
           message: "Please select a date range",
@@ -65,6 +70,7 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
         ),
     })
     .required();
+
   type FormFields = z.infer<typeof schema>;
   const formOptions = { resolver: zodResolver(schema) };
   const {
@@ -79,8 +85,7 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
     suggestedMax: 250,
     suggestedMin: 0,
   };
-  const [voltUsage, setVoltUsage] = useState<DatasetsProps[]>([]);
-
+  const [voltUsage, setVoltUsage] = useState<DatasetsProps>({ x: [], y: []});
   const [loading, setLoading] = useState<boolean>(true);
 
   const defaultDateRange = {
@@ -88,35 +93,47 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
     endDate: null,
   };
 
-  const handleValueChange = (newValue: any) => {
-    const { startDate, endDate } = newValue;
-    return { startDate, endDate };
-  };
-
   const onSearch = async () => {
     const { startDate, endDate } = getValues().dateRange;
     if (!startDate || !endDate) return;
-    const setStartDate: Date = startOfDay(new Date(Date.parse(startDate)));
+    const setStartDate: Date = startOfDay(new Date(startDate));
     const setEndDate: Date = endOfDay(new Date(endDate));
     const data = {
       startDate: setStartDate.toISOString(),
       endDate: setEndDate.toISOString(),
     };
-    console.log(data);
+
+    const reqData: ReportDeviceRequest = {
+      device_id: DeviceUuid,
+      date_from: data.startDate,
+      date_to: data.endDate,
+    };
+
+    console.log(reqData);
+
+    try {
+      const response = await getReportDeviceVolt(reqData);
+      if (response.success) {
+        setVoltUsage({ x: response.data.created_at, y: response.data.volt });
+      }
+    } catch (error: any) {
+      showAlert(error.response.data.message, "error");
+    }
   };
 
   const onReset = async () => {
     reset({
-      dateRange: defaultDateRange,
+      dateRange: {
+        startDate: null,
+        endDate: null,
+      },
     });
   };
 
   useEffect(() => {
     const fetchVoltUsage = async () => {
       try {
-        // const response = { data: [] };
-        // setVoltUsage(response.data);
-        setVoltUsage([]);
+        setVoltUsage({ x: [], y: [] });
         setTimeout(() => {
           setLoading(false);
         }, 200);
@@ -129,40 +146,108 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
   }, []);
   return (
     <>
-      <h4 className="text-xl mt-12 font-bold text-center">{DeviceName}</h4>
+      <h4 className="text-xl mt-12 font-bold text-center">{DeviceUuid}</h4>
       <form onSubmit={handleSubmit(onSearch)} onReset={onReset}>
         <div className="flex flex-wrap justify-center items-end m-4 gap-6">
-          <div className="relative gap-2 w-60">
-            <label className="flex mb-1">Report date range</label>
-            <Controller
-              control={control}
-              name="dateRange"
-              defaultValue={defaultDateRange}
-              render={({ field }) => (
-                <Datepicker
-                  inputClassName={(value) =>
-                    `${value} ${
-                      errors?.dateRange?.message
-                        ? "border-[1px] !border-red-500"
-                        : ""
-                    }`
-                  }
-                  primaryColor="violet"
-                  startWeekOn="mon"
-                  placeholder="Select Date Range"
-                  value={field.value as DateValueType}
-                  onChange={(e) => {
-                    console.log("e:", field.value);
-                    field.onChange(handleValueChange(e));
-                  }}
-                  showShortcuts={true}
-                  readOnly={true}
-                  displayFormat="DD/MM/YYYY"
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-wrap gap-4">
+              <div className="relative gap-2 w-60">
+                <label className="flex mb-1">Report date range from</label>
+                <Controller
+                  control={control}
+                  name="dateRange"
+                  defaultValue={defaultDateRange}
+                  render={({ field }) => (
+                    <DatePicker
+                      className={`${
+                        errors?.dateRange ? "border-[1px] !border-red-500 focus:right-2" : ""
+                      }`}
+                      selected={
+                        field.value.startDate
+                          ? new Date(field.value.startDate)
+                          : null
+                      }
+                      onChange={(e) =>
+                        field.onChange({ ...field.value, startDate: e })
+                      }
+                      selectsStart
+                      dateFormat="dd/MM/yyyy"
+                      startDate={
+                        field.value.startDate
+                          ? new Date(field.value.startDate)
+                          : null
+                      }
+                      endDate={
+                        field.value.endDate
+                          ? new Date(field.value.endDate)
+                          : null
+                      }
+                      nextMonthButtonLabel={
+                        <FaChevronRight className="text-gray-500" />
+                      }
+                      previousMonthButtonLabel={
+                        <FaChevronLeft className="text-gray-500" />
+                      }
+                      popperClassName="react-datepicker-left"
+                    />
+                  )}
                 />
-              )}
-            />
+                {errors?.dateRange?.startDate && (
+                  <span className="absolute -bottom-5 text-red-500 text-sm">
+                    {errors?.dateRange?.startDate?.message}
+                  </span>
+                )}
+              </div>
+              <div className="relative gap-2 w-60">
+                <label className="flex mb-1">To</label>
+                <Controller
+                  control={control}
+                  name="dateRange"
+                  defaultValue={defaultDateRange}
+                  render={({ field }) => (
+                    <DatePicker
+                      className={`${
+                        errors?.dateRange ? "border-[1px] !border-red-500" : ""
+                      }`}
+                      selected={
+                        field.value.endDate
+                          ? new Date(field.value.endDate)
+                          : null
+                      }
+                      onChange={(e) =>
+                        field.onChange({ ...field.value, endDate: e })
+                      }
+                      selectsEnd
+                      startDate={
+                        field.value.startDate
+                          ? new Date(field.value.startDate)
+                          : null
+                      }
+                      endDate={
+                        field.value.endDate
+                          ? new Date(field.value.endDate)
+                          : null
+                      }
+                      dateFormat="dd/MM/yyyy"
+                      nextMonthButtonLabel={
+                        <FaChevronRight className="text-gray-500" />
+                      }
+                      previousMonthButtonLabel={
+                        <FaChevronLeft className="text-gray-500" />
+                      }
+                      popperClassName="react-datepicker-right"
+                    />
+                  )}
+                />
+                {errors?.dateRange?.endDate && (
+                  <span className="absolute -bottom-5 text-red-500 text-sm">
+                    {errors?.dateRange?.endDate?.message}
+                  </span>
+                )}
+              </div>
+            </div>
             {errors?.dateRange && (
-              <span className="absolute -bottom-5 text-red-500 text-sm">
+              <span className="absolute mt-20 text-red-500 text-sm">
                 {errors?.dateRange?.message}
               </span>
             )}
@@ -184,6 +269,11 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
             >
               <FaSearchengin className="h-4 w-4" /> Search
             </AsyncButton>
+            <ExportToExcel
+            disabled={voltUsage && voltUsage.x.length === 0}
+              data={voltUsage}
+              fileName={"Volt " + new Date().toISOString()}
+            />
           </div>
         </div>
       </form>
