@@ -22,6 +22,7 @@ import DialogSetDevice, { OpenDialogDataDevice } from "./DialogSetDevice";
 import { DeviceID } from "../../../models/device";
 import {
   deleteUser,
+  getMasterDevice,
   getUserByUserId,
   getUsersCountDevice,
   getUsersDeviceByUserID,
@@ -213,14 +214,19 @@ const UsersPage: React.FC<any> = () => {
 
   const getUserDevice = async (user_id: string, username: string) => {
     try {
+      const resMasterDevice = await getMasterDevice();
+      if (resMasterDevice.success === false) throw new Error(resMasterDevice.message);
+      const dataMasterDevice = resMasterDevice.data;
       const res = await getUsersDeviceByUserID({ user_id });
-      console.log(res);
       if (res.success === false) throw new Error(res.message);
       const dataUserDevice = res.data.data_list;
 
       const dataUser: OpenDialogDataDevice = {
         user_id,
         username,
+        master_device_id: dataMasterDevice?.map(
+          (item: any) => item.id
+        ) as string[],
         device_id: dataUserDevice?.map(
           (item: any) => item.device_id
         ) as string[],
@@ -316,7 +322,7 @@ const UsersPage: React.FC<any> = () => {
           <div className="flex flex-col gap-1 w-52">
             <label className="flex">Username</label>
             <label
-              className={`input input-bordered input-sm flex items-center gap-2 ${
+              className={`input input-bordered input-md flex items-center gap-2 ${
                 errors.username?.message && "input-error"
               }`}
             >
@@ -336,7 +342,7 @@ const UsersPage: React.FC<any> = () => {
           <div className="flex flex-col gap-1 w-52">
             <label className="flex">Name</label>
             <label
-              className={`input input-bordered input-sm flex items-center gap-2 ${
+              className={`input input-bordered input-md flex items-center gap-2 ${
                 errors.name?.message && "input-error"
               }`}
             >
@@ -353,7 +359,7 @@ const UsersPage: React.FC<any> = () => {
             <label className="flex">Role</label>
             <select
               {...register("role")}
-              className={`select select-bordered select-sm w-full max-w-xs text-sm ${
+              className={`select select-bordered select-md w-full max-w-xs text-sm ${
                 errors.role?.message && "select-error"
               }`}
               title="Select Role"
@@ -373,7 +379,7 @@ const UsersPage: React.FC<any> = () => {
             <label className="flex">Device ID</label>
             <select
               {...register("device_id")}
-              className={`select select-bordered select-sm w-full max-w-xs text-sm ${
+              className={`select select-bordered select-md w-full max-w-xs text-sm ${
                 errors.device_id?.message && "select-error"
               }`}
               title="Select Role"

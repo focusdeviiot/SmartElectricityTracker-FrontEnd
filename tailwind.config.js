@@ -1,8 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 import daisyui from "daisyui";
+import forms from "@tailwindcss/forms";
 
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}", "./node_modules/react-tailwindcss-datepicker/dist/index.esm.js"],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    // "./node_modules/react-tailwindcss-datepicker/dist/index.esm.js",
+  ],
   theme: {
     extend: {
       animation: {
@@ -47,7 +52,13 @@ export default {
       },
     },
   },
-  plugins: [daisyui],
+
+  plugins: [
+    daisyui,
+    forms({
+      strategy: "class",
+    }),
+  ],
   daisyui: {
     themes: ["dark"],
   },

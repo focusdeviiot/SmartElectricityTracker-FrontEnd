@@ -12,7 +12,7 @@ import {
 } from "chart.js";
 import type { ChartData, ChartOptions } from "chart.js";
 import { Line } from "react-chartjs-2";
-import 'chartjs-adapter-date-fns';
+import "chartjs-adapter-date-fns";
 
 ChartJS.register(
   CategoryScale,
@@ -30,8 +30,8 @@ export interface LimitProps {
   suggestedMin: number;
 }
 export interface DatasetsProps {
-  x: Date;
-  y: number;
+  x: string[];
+  y: number[];
 }
 
 export interface LineChartProps {
@@ -40,7 +40,7 @@ export interface LineChartProps {
   unit: string;
   stepSize?: number;
   limit?: LimitProps;
-  datasets?: DatasetsProps[];
+  datasets?: DatasetsProps;
 }
 
 const LineChart: React.FC<LineChartProps> = ({
@@ -52,20 +52,16 @@ const LineChart: React.FC<LineChartProps> = ({
 }) => {
   const limitset = limit ?? { grace: "10%" };
   const data: ChartData<"line"> = {
-    // labels: [],
+    labels: datasets?.x || [],
     datasets: [
       {
         label: title,
         data:
-          datasets?.map((data) => {
-            return {
-              x: data.x.getTime(),
-              y: data.y,
-            };
-          }) || [],
+        datasets?.y || [],
         borderColor: "#eab308",
         backgroundColor: "#eab308",
         tension: 0.4,
+        pointRadius: 0,
       },
     ],
   };
@@ -98,14 +94,14 @@ const LineChart: React.FC<LineChartProps> = ({
         ticks: {
           color: "#718096",
         },
-        type: "time",
-        time: {
-          unit: "day",
-          tooltipFormat: 'dd MMM yyyy',
-          displayFormats: {
-            day: "dd MMM yyyy : hh:mm",
-          },
-        },
+        type: "category",
+        // time: {
+        //   unit: "day",
+        //   tooltipFormat: 'dd MMM yyyy : hh:mm',
+        //   displayFormats: {
+        //     day: "dd MMM yyyy : hh:mm",
+        //   },
+        // },
       },
       y: {
         display: true,
