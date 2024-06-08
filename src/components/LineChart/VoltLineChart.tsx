@@ -5,7 +5,7 @@ import { FaTrashCan } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { differenceInMonths, endOfDay, startOfDay } from "date-fns/fp";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ReportDeviceRequest } from "../../models/device";
 import { getReportDeviceVolt } from "../../api/api";
 import { useAlert } from "../../contexts/AlertContext";
@@ -85,7 +85,7 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
     suggestedMin: 0,
   };
   const [voltUsage, setVoltUsage] = useState<DatasetsProps>({ x: [], y: [] });
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const defaultDateRange = {
     startDate: new Date(),
@@ -93,6 +93,7 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
   };
 
   const onSearch = async () => {
+    setLoading(true);
     const { startDate, endDate } = getValues().dateRange;
     if (!startDate || !endDate) return;
     const setStartDate: Date = startOfDay(new Date(startDate));
@@ -117,6 +118,8 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
       }
     } catch (error: any) {
       showAlert(error.response.data.message, "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -129,20 +132,7 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
     });
   };
 
-  useEffect(() => {
-    const fetchVoltUsage = async () => {
-      try {
-        setVoltUsage({ x: [], y: [] });
-        setTimeout(() => {
-          setLoading(false);
-        }, 200);
-      } catch (error) {
-        console.error(error);
-      }
-    };
 
-    fetchVoltUsage();
-  }, []);
   return (
     <>
       <h4 className="text-xl mt-12 font-bold text-center">{DeviceUuid}</h4>

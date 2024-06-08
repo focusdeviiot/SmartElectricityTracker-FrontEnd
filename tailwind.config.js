@@ -53,7 +53,12 @@ export default {
     },
   },
 
-  plugins: [daisyui, forms],
+  plugins: [
+    daisyui,
+    forms({
+      strategy: "class",
+    }),
+  ],
   daisyui: {
     themes: ["dark"],
   },
