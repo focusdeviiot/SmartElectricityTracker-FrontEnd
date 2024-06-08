@@ -96,7 +96,7 @@ const DialogSetDevice: React.FC<DialogSetDeviceProps> = ({
         <p className="flex justify-center text-gray-400">
           Setting devices for username :
           <p className="font-bold text-gray-300">
-            &nbsp;{openDialog?.username}
+            &nbsp;{openDialog?.username || "No Username"}
           </p>
         </p>
 

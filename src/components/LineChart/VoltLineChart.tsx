@@ -89,7 +89,7 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
 
   const defaultDateRange = {
     startDate: new Date(),
-    endDate: new Date(),  
+    endDate: new Date(),
   };
 
   const onSearch = async () => {
@@ -125,13 +125,11 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
 
   const onReset = async () => {
     reset({
-      dateRange: {
-        startDate: null,
-        endDate: null,
-      },
+      dateRange: defaultDateRange,
     });
-  };
 
+    setVoltUsage({ x: [], y: [] });
+  };
 
   return (
     <>
@@ -256,33 +254,29 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
               className="mb-1"
               title="Search"
               type="submit"
-              // loading={loading}
+              loading={loading}
             >
               <FaSearchengin className="h-4 w-4" /> Search
             </AsyncButton>
             <ExportToExcel
               disabled={voltUsage && voltUsage.x.length === 0}
               data={voltUsage}
-              fileName={"Volt " + new Date().toISOString()}
+              fileName={"Volt"}
             />
           </div>
         </div>
       </form>
 
       <div className="flex justify-center mt-8">
-        {loading ? (
-          <span className="loading loading-spinner loading-lg text-primary h-60"></span>
-        ) : (
-          <div className="w-full xl:w-[980px] h-96">
-            <LineChart
-              title="Volt"
-              unit="V"
-              stepSize={25}
-              limit={defaultLimit}
-              datasets={voltUsage}
-            />
-          </div>
-        )}
+        <div className="w-full xl:w-[980px] h-96">
+          <LineChart
+            title="Volt"
+            unit="V"
+            stepSize={25}
+            limit={defaultLimit}
+            datasets={voltUsage}
+          />
+        </div>
       </div>
     </>
   );

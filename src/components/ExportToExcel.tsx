@@ -3,6 +3,10 @@ import { write, utils } from "xlsx";
 import { saveAs } from "file-saver";
 import AsyncButton from "./AsyncButton/AsyncButton";
 import { FaRegFileExcel } from "react-icons/fa6";
+import { format } from "date-fns/fp";
+import { date } from "zod";
+
+const formatDate = format("dd-MM-yyyy_HH-mm-ss");
 
 const ExportToExcel = ({ data, fileName, disabled = false }) => {
   const handleExport = async () => {
@@ -37,7 +41,7 @@ const ExportToExcel = ({ data, fileName, disabled = false }) => {
       // สร้าง Blob จาก ArrayBuffer และบันทึกไฟล์
       saveAs(
         new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
-        `${fileName}.xlsx`
+        `${fileName + " " + formatDate(new Date())}.xlsx`
       );
       resolve();
     });
