@@ -1,4 +1,3 @@
-
 import LineChart, { LimitProps, DatasetsProps } from "./LineChart";
 import AsyncButton from "../AsyncButton/AsyncButton";
 import { FaSearchengin } from "react-icons/fa";
@@ -85,12 +84,12 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
     suggestedMax: 250,
     suggestedMin: 0,
   };
-  const [voltUsage, setVoltUsage] = useState<DatasetsProps>({ x: [], y: []});
+  const [voltUsage, setVoltUsage] = useState<DatasetsProps>({ x: [], y: [] });
   const [loading, setLoading] = useState<boolean>(true);
 
   const defaultDateRange = {
-    startDate: null,
-    endDate: null,
+    startDate: new Date(),
+    endDate: new Date(),  
   };
 
   const onSearch = async () => {
@@ -160,7 +159,9 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
                   render={({ field }) => (
                     <DatePicker
                       className={`${
-                        errors?.dateRange ? "border-[1px] !border-red-500 focus:right-2" : ""
+                        errors?.dateRange
+                          ? "border-[1px] !border-red-500 focus:right-2"
+                          : ""
                       }`}
                       selected={
                         field.value.startDate
@@ -270,7 +271,7 @@ const VoltLineChart: React.FC<VoltLineChartProps> = ({
               <FaSearchengin className="h-4 w-4" /> Search
             </AsyncButton>
             <ExportToExcel
-            disabled={voltUsage && voltUsage.x.length === 0}
+              disabled={voltUsage && voltUsage.x.length === 0}
               data={voltUsage}
               fileName={"Volt " + new Date().toISOString()}
             />

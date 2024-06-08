@@ -1,6 +1,6 @@
 
 .react-datepicker__input-container input {
-    @apply block w-full text-base md:text-sm bg-base-100 border border-gray-700 rounded-lg shadow-sm form-input h-12;
+    @apply block w-full text-base md:text-sm bg-base-100 border border-gray-700 rounded-lg shadow-sm form-input h-12 cursor-pointer;
   }
   
   .react-datepicker-popper {
@@ -56,7 +56,7 @@
   }
   
   .react-datepicker__day {
-    @apply mb-1 w-8 h-8 flex items-center justify-center py-1 text-sm leading-loose transition text-gray-700 rounded;
+    @apply mb-1 w-8 h-8 flex items-center justify-center py-1 text-sm leading-loose transition text-gray-700 rounded cursor-pointer;
   }
   
   .react-datepicker__day--disabled {
