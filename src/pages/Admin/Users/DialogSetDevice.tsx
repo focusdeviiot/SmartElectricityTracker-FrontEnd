@@ -1,7 +1,7 @@
 import AsyncButton from "../../../components/AsyncButton/AsyncButton";
 import { IoSaveOutline } from "react-icons/io5";
 // import { FaKey, FaUser, FaUserTag } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { DeviceID } from "../../../models/device";
 import { updateUserDevice } from "../../../api/api";
 import { useAlert } from "../../../contexts/AlertContext";
@@ -9,6 +9,7 @@ import { useAlert } from "../../../contexts/AlertContext";
 export interface DialogUserDeviceList {
   user_id: string;
   device_id?: string[];
+  master_device_id?: string[];
 }
 
 export interface OpenDialogDataDevice extends DialogUserDeviceList {
@@ -25,29 +26,60 @@ const DialogSetDevice: React.FC<DialogSetDeviceProps> = ({
   setOpenDialog,
 }) => {
   const { showAlert } = useAlert();
-  const [device01, setDevice01] = useState(false);
-  const [device02, setDevice02] = useState(false);
-  const [device03, setDevice03] = useState(false);
+  const [devicesSet, setDevicesSet] = useState<string[]>(openDialog?.device_id || []);
 
   const handleDevice01Change = (event) => {
-    setDevice01(event.target.checked);
+    if (event.target.checked) {
+      setDevicesSet((prev) => [
+        ...prev,
+        openDialog?.master_device_id?.[0] ?? DeviceID.DEVICE1,
+      ]);
+    } else {
+      setDevicesSet((prev) =>
+        prev.filter(
+          (item) =>
+            item !== openDialog?.master_device_id?.[0] ?? DeviceID.DEVICE1
+        )
+      );
+    }
   };
 
   const handleDevice02Change = (event) => {
-    setDevice02(event.target.checked);
+    if (event.target.checked) {
+      setDevicesSet((prev) => [
+        ...prev,
+        openDialog?.master_device_id?.[1] ?? DeviceID.DEVICE2,
+      ]);
+    } else {
+      setDevicesSet((prev) =>
+        prev.filter(
+          (item) =>
+            item !== openDialog?.master_device_id?.[1] ?? DeviceID.DEVICE2
+        )
+      );
+    }
   };
 
   const handleDevice03Change = (event) => {
-    setDevice03(event.target.checked);
+    if (event.target.checked) {
+      setDevicesSet((prev) => [
+        ...prev,
+        openDialog?.master_device_id?.[2] ?? DeviceID.DEVICE3,
+      ]);
+    } else {
+      setDevicesSet((prev) =>
+        prev.filter(
+          (item) =>
+            item !== openDialog?.master_device_id?.[2] ?? DeviceID.DEVICE3
+        )
+      );
+    }
   };
 
   const handleSave = async () => {
     if (!openDialog?.user_id) return;
 
-    const device_id: string[] = [];
-    if (device01) device_id.push(DeviceID.DEVICE1);
-    if (device02) device_id.push(DeviceID.DEVICE2);
-    if (device03) device_id.push(DeviceID.DEVICE3);
+    const device_id = devicesSet;
 
     const dataUpdate: DialogUserDeviceList = {
       user_id: openDialog?.user_id ?? "",
@@ -62,7 +94,10 @@ const DialogSetDevice: React.FC<DialogSetDeviceProps> = ({
       }
     } catch (error: any) {
       console.error(error);
-      showAlert(`Failed to update device ${error?.response.data.message}`, "error");
+      showAlert(
+        `Failed to update device ${error?.response.data.message}`,
+        "error"
+      );
     }
   };
 
@@ -70,23 +105,29 @@ const DialogSetDevice: React.FC<DialogSetDeviceProps> = ({
     setOpenDialog(null);
   };
 
-  useEffect(() => {
-    if (openDialog?.device_id) {
-      setDevice01(openDialog?.device_id.includes(DeviceID.DEVICE1));
-      setDevice02(openDialog?.device_id.includes(DeviceID.DEVICE2));
-      setDevice03(openDialog?.device_id.includes(DeviceID.DEVICE3));
-    } else {
-      setDevice01(false);
-      setDevice02(false);
-      setDevice03(false);
-    }
+  const device01 = useMemo(
+    () =>
+      devicesSet.includes(
+        openDialog?.master_device_id?.[0] ?? DeviceID.DEVICE1
+      ),
+    [devicesSet, openDialog]
+  );
 
-    return () => {
-      setDevice01(false);
-      setDevice02(false);
-      setDevice03(false);
-    };
-  }, [openDialog]);
+  const device02 = useMemo(
+    () =>
+      devicesSet.includes(
+        openDialog?.master_device_id?.[1] ?? DeviceID.DEVICE2
+      ),
+    [devicesSet, openDialog]
+  );
+
+  const device03 = useMemo(
+    () =>
+      devicesSet.includes(
+        openDialog?.master_device_id?.[2] ?? DeviceID.DEVICE3
+      ),
+    [devicesSet, openDialog]
+  );
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">

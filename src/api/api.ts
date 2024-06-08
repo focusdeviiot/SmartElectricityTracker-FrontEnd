@@ -1,6 +1,15 @@
 import apiClient from "./axios";
 import { Response } from '../models/response';
 
+export const getMasterDevice = async (): Promise<Response> => {
+    try {
+        const response = await apiClient.get<Response>('devices',{});
+        return response.data;
+    } catch (error: any) {
+        return Promise.reject(error);
+    }
+}
+
 export const getDeviceByUserID = async (): Promise<Response> => {
     try {
         const response = await apiClient.get<Response>('devices-byuser',{});

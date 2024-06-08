@@ -22,6 +22,7 @@ import DialogSetDevice, { OpenDialogDataDevice } from "./DialogSetDevice";
 import { DeviceID } from "../../../models/device";
 import {
   deleteUser,
+  getMasterDevice,
   getUserByUserId,
   getUsersCountDevice,
   getUsersDeviceByUserID,
@@ -213,14 +214,19 @@ const UsersPage: React.FC<any> = () => {
 
   const getUserDevice = async (user_id: string, username: string) => {
     try {
+      const resMasterDevice = await getMasterDevice();
+      if (resMasterDevice.success === false) throw new Error(resMasterDevice.message);
+      const dataMasterDevice = resMasterDevice.data;
       const res = await getUsersDeviceByUserID({ user_id });
-      console.log(res);
       if (res.success === false) throw new Error(res.message);
       const dataUserDevice = res.data.data_list;
 
       const dataUser: OpenDialogDataDevice = {
         user_id,
         username,
+        master_device_id: dataMasterDevice?.map(
+          (item: any) => item.id
+        ) as string[],
         device_id: dataUserDevice?.map(
           (item: any) => item.device_id
         ) as string[],

@@ -4,7 +4,6 @@ import { saveAs } from "file-saver";
 import AsyncButton from "./AsyncButton/AsyncButton";
 import { FaRegFileExcel } from "react-icons/fa6";
 import { format } from "date-fns/fp";
-import { date } from "zod";
 
 const formatDate = format("dd-MM-yyyy_HH-mm-ss");
 
