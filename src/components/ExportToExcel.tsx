@@ -1,4 +1,3 @@
-import React from "react";
 import { write, utils } from "xlsx";
 import { saveAs } from "file-saver";
 import AsyncButton from "./AsyncButton/AsyncButton";

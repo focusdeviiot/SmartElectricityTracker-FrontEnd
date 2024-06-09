@@ -1,4 +1,3 @@
-import React from "react";
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import { MenuItem, menuData } from "./models/menuData";
