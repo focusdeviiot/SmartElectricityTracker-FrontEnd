@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import Navbar from "./Navbar";
@@ -12,6 +12,23 @@ interface LayoutProps {
 
 const ProfileDropdown: React.FC = () => {
   const auth = useContext(AuthContext);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        document.body.classList.add('hide-url-bar');
+      } else {
+        document.body.classList.remove('hide-url-bar');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <div className="dropdown dropdown-end">
       <div
@@ -83,7 +100,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="flex-1">
           <Link to="/" className="btn btn-ghost text-xl hover:bg-transparent">
             <MdElectricBolt className="w-8 h-8" />
-            Smart Electricity Tracker
+            <p className="max-sm:hidden">Smart Electricity Tracker</p>
+            <p className="sm:hidden">SET IoT</p>
           </Link>
         </div>
         <div className="flex-none gap-2 mr-2">
