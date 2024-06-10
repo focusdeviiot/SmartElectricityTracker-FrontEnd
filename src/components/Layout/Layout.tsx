@@ -111,7 +111,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <main className="bg-base-300 h-screen pt-20 drawer-content flex flex-col items-center overflow-y-auto px-5">
+        <main className="bg-base-300 h-screen pt-20 pb-10 drawer-content flex flex-col items-center overflow-y-auto px-5">
           {/* Page content here */}
           <div className="container mx-auto">{children}</div>
         </main>
