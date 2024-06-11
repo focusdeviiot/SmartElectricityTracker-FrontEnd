@@ -39,8 +39,8 @@ export default defineConfig({
       ],
       "start_url": "/",
       "display": "standalone",
-      "background_color": "#FFFFFF",
-      "theme_color": "#FFFFFF",
+      "background_color": "#18181B",
+      "theme_color": "#18181B",
       "description": "Smart Electricity Tracker IoT"
     }
   })
