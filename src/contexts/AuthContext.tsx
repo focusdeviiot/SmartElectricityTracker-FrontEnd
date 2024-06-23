@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useEffect, useState, ReactNode } from "react";
 import { checkToken } from "../api/auth";
 import Loading from "../pages/Loading";
 

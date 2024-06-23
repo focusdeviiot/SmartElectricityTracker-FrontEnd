@@ -1,15 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdElectricBolt } from "react-icons/md";
 import useWebSocket from "../hooks/useWebSocket";
 
-// interface PowerTeter {
-//   voltage: number;
-//   current: number;
-//   active_power: number;
-// }
-
 const Home = () => {
-  const { message, isConnected } = useWebSocket("ws://localhost:8080/ws");
+  const { message, isConnected } = useWebSocket(`ws://${location.hostname}/ws`); // useWebSocket(`ws://${location.hostname}/ws`);  useWebSocket(`ws://localhost:8080/ws`);
   const [data, setData] = useState<{ [key: string]: { voltage: number; current: number; active_power: number } } | null>(null);
 
   useEffect(() => {

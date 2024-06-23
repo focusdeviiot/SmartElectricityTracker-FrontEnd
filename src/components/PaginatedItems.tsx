@@ -11,20 +11,6 @@ type AppProps = {
     initPage?: number
 }
 
-// function Items({ currentItems }) {
-//     return (
-//         <>
-//             {currentItems &&
-//                 currentItems.map((item, index) => (
-//                     <div key={index}>
-//                         <h3>Item #{item} </h3>
-//                     </div>
-//                 ))
-//             }
-//         </>
-//     );
-// }
-
 function PaginatedItems({ itemsPerPage, items, onPageChange, initPage }: AppProps) {
     useEffect(() => {
         console.log('initPage ', initPage)
@@ -32,7 +18,7 @@ function PaginatedItems({ itemsPerPage, items, onPageChange, initPage }: AppProp
         // console.log('items ', items)
     }, [initPage])
     // const [itemOffset, setItemOffset] = useState(0);
-    const newItem = Array.from({ length: items }, (v: any, i: number) => i + 1)
+    const newItem = Array.from({ length: items }, (_, i: number) => i + 1)
 
     // const endOffset = itemOffset + itemsPerPage;
     // console.log(`Loading items from ${itemOffset} to ${endOffset}`);
