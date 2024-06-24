@@ -1,10 +1,14 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import Navbar from "./Navbar";
 import { IoMdLogOut } from "react-icons/io";
 import { AuthContext } from "../../contexts/AuthContext";
 import { MdElectricBolt } from "react-icons/md";
+import useWebSocket from "../../hooks/useWebSocket";
+import { format } from "date-fns";
+import { syncTime } from "../../api/api";
+import { useAlert } from "../../contexts/AlertContext";
 
 interface LayoutProps {
   children?: React.ReactNode;
@@ -12,22 +16,17 @@ interface LayoutProps {
 
 const ProfileDropdown: React.FC = () => {
   const auth = useContext(AuthContext);
+  const { showAlert } = useAlert();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        document.body.classList.add('hide-url-bar');
-      } else {
-        document.body.classList.remove('hide-url-bar');
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+  const syncTimeHandler = async () => {
+    try {
+      const timestamp = new Date();
+      await syncTime({ timestamp });
+    } catch (error :any) {
+      console.error(error);
+      showAlert(error.response.data.message, "error");
+    }
+  };
 
   return (
     <div className="dropdown dropdown-end">
@@ -58,6 +57,9 @@ const ProfileDropdown: React.FC = () => {
         </div>
         <ul className="mt-2 flex flex-col gap-2">
           <li>
+            {auth?.role === "ADMIN" && (
+              <button className="btn btn-ghost btn-sm w-full" onClick={syncTimeHandler}>Sync Time</button>
+            )}
             <Link
               className="flex justify-center items-center h-10 text-red-500"
               to="/logout"
@@ -72,7 +74,44 @@ const ProfileDropdown: React.FC = () => {
   );
 };
 
+const TimeDisplay: React.FC = () => {
+  const { message, isConnected } = useWebSocket("/time");
+  const [time, setTime] = useState<string>("");
+  const [date, setDate] = useState<string>("");
+
+  useEffect(() => {
+    if (isConnected && message) {
+      const time = JSON.parse(message);
+      setTime(format(new Date(time.time), "HH:mm:ss"));
+      setDate(format(new Date(time.time), "dd/MM/yyyy"));
+    }
+  }, [isConnected, message]);
+
+  return (
+    <div className="flex flex-col items-center">
+      <p className="text-xs">{date}</p>
+      <p className="text-xs">{time}</p>
+    </div>
+  );
+};
+
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        document.body.classList.add("hide-url-bar");
+      } else {
+        document.body.classList.remove("hide-url-bar");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col bg-base-300">
       {/* <Header /> */}
@@ -104,7 +143,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <p className="sm:hidden">SET IoT</p>
           </Link>
         </div>
-        <div className="flex-none gap-2 mr-2">
+        <div className="flex-none gap-3 mr-2">
+          <TimeDisplay />
           <ProfileDropdown />
         </div>
       </nav>
