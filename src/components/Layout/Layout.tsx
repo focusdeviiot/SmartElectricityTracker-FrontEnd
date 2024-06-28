@@ -7,8 +7,8 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { MdElectricBolt } from "react-icons/md";
 import useWebSocket from "../../hooks/useWebSocket";
 import { format } from "date-fns";
-import { syncTime } from "../../api/api";
-import { useAlert } from "../../contexts/AlertContext";
+// import { syncTime } from "../../api/api";
+// import { useAlert } from "../../contexts/AlertContext";
 
 interface LayoutProps {
   children?: React.ReactNode;
@@ -16,17 +16,17 @@ interface LayoutProps {
 
 const ProfileDropdown: React.FC = () => {
   const auth = useContext(AuthContext);
-  const { showAlert } = useAlert();
+  // const { showAlert } = useAlert();
 
-  const syncTimeHandler = async () => {
-    try {
-      const timestamp = new Date();
-      await syncTime({ timestamp });
-    } catch (error :any) {
-      console.error(error);
-      showAlert(error.response.data.message, "error");
-    }
-  };
+  // const syncTimeHandler = async () => {
+  //   try {
+  //     const timestamp = new Date();
+  //     await syncTime({ timestamp });
+  //   } catch (error :any) {
+  //     console.error(error);
+  //     showAlert(error.response.data.message, "error");
+  //   }
+  // };
 
   return (
     <div className="dropdown dropdown-end">
@@ -57,9 +57,9 @@ const ProfileDropdown: React.FC = () => {
         </div>
         <ul className="mt-2 flex flex-col gap-2">
           <li>
-            {auth?.role === "ADMIN" && (
+            {/* {auth?.role === "ADMIN" && (
               <button className="btn btn-ghost btn-sm w-full" onClick={syncTimeHandler}>Sync Time</button>
-            )}
+            )} */}
             <Link
               className="flex justify-center items-center h-10 text-red-500"
               to="/logout"
